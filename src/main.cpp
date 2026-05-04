@@ -4,6 +4,7 @@
 
 int main(const int argc, const char *argv[]) {
     const std::vector<std::string> args(argv, argv + argc);
+    
     try {
         CLI cli;
         cli.execute(args);
