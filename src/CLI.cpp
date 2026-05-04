@@ -65,6 +65,11 @@ void CLI::checkValidInputFiles(const std::string& rangesFile, const std::string&
     }
 }
 
+void CLI::readInput(const std::string &rangesFile, const std::string &registersFile) {
+    TxtParser parser(rangesFile, registersFile);
+    // exec the function that will parse
+}
+
 std::vector<std::string> CLI::askInputFilePath() {
     constexpr char sep = std::filesystem::path::preferred_separator;
     std::cout << "Enter input path to ranges and registers files, respectively (.txt):\n(" << std::filesystem::current_path().string() << sep << "input" << sep << ")";
@@ -76,4 +81,6 @@ std::vector<std::string> CLI::askInputFilePath() {
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
     processArgs(args);
+
+    readInput(_rangesFileName, _registersFileName);
 }
