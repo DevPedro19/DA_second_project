@@ -78,4 +78,3 @@ void CLI::execute(const std::vector<std::string> &args) {
     processArgs(args);
     std::cout << _rangesFileName << ' ' << _registersFileName << std::endl;
 }
-
