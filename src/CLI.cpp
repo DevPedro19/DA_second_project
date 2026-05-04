@@ -76,5 +76,4 @@ std::vector<std::string> CLI::askInputFilePath() {
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
     processArgs(args);
-    std::cout << _rangesFileName << ' ' << _registersFileName << std::endl;
 }
