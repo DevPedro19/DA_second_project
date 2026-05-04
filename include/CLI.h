@@ -26,7 +26,7 @@ public:
      * @param rangesFile The path to the ranges file to be checked.
      * @param registersFile The path to the registers file to be checked.
      */
-    static void checkValidInputFiles(const std::string& rangesFile , const std::string& registersFile);
+    static void checkValidInputFiles(const std::string& rangesFile, const std::string& registersFile);
 
     /**
      * @brief Asks the user to input the paths to the ranges and registers files, respectively.
@@ -34,8 +34,8 @@ public:
      */
     static std::vector<std::string> askInputFilePath();
     
-    // This will be implements once the parser works
-    //static void readInput(const std::string& inputFileName, Data& data);
+    
+    static void readInput(const std::string& rangesFile, const std::string& registersFile /*, Data& data*/);
 
     /**
      * @brief Processes the command line arguments and determines if the execution is in batch or interactive modes and behaves accordingly to check the validity of the input file's extension and set the input and output file paths.
