@@ -10,8 +10,9 @@ add_executable(DA_second_project
         src/main.cpp
         include/WebBuilder.h
         src/WebBuilder.cpp
-        include/UFDS.h
+        data_structures/UFDS.h
         src/UFDS.cpp
         include/CLI.h
         src/CLI.cpp
+        data_structures/Graph.h
 )

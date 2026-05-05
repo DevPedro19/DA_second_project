@@ -1,5 +1,5 @@
 #include "WebBuilder.h"
-#include "UFDS.h"
+#include "../data_structures/UFDS.h"
 #include <iostream>
 
 WebBuilder::WebBuilder(std::string varName, std::vector<LiveRange> liveRanges) : varName(std::move(varName)), liveRanges(std::move(liveRanges)) {}
