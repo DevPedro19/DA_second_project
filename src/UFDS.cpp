@@ -6,9 +6,9 @@
  *      Author: Gonçalo Leão
  */
 
-#include "UFDS.h"
+#include "../data_structures/UFDS.h"
 
-UFDS::UFDS(unsigned int N) {
+UFDS::UFDS(const unsigned int N) {
     path.resize(N);
     rank.resize(N);
     for (unsigned long i = 0; i < N; i++) {

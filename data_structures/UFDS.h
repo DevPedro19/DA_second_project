@@ -6,8 +6,8 @@
  *      Author: Gonçalo Leão
  */
 
-#ifndef DA_TP_CLASSES_UFDS
-#define DA_TP_CLASSES_UFDS
+#ifndef DA_SECOND_PROJECT_UFDS_H
+#define DA_SECOND_PROJECT_UFDS_H
 
 #include <vector>
 
@@ -55,4 +55,4 @@ private:
     std::vector<unsigned int> rank;
 };
 
-#endif //DA_TP_CLASSES_UFDS
+#endif //DA_SECOND_PROJECT_UFDS_H

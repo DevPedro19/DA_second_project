@@ -7,22 +7,19 @@ include_directories(include)
 
 add_executable(DA_second_project
         include/allocation.h
-        src/main.cpp
         include/WebBuilder.h
-        src/WebBuilder.cpp
-        include/UFDS.h
-        src/UFDS.cpp
         include/CLI.h
-        src/CLI.cpp
         include/TxtParser.h
         include/ExecutionPlan.h
         include/InfoMenu.h
-        src/InfoMenu.cpp
-)
 
-add_executable(test
-        include/allocation.h
-        src/test.cpp
-        include/TxtParser.h
-        include/ExecutionPlan.h
+        data_structures/UFDS.h
+        data_structures/Graph.h
+
+        src/main.cpp
+        src/WebBuilder.cpp
+        src/UFDS.cpp
+        src/CLI.cpp
+        src/InfoMenu.cpp
+        src/TxtParser.cpp
 )

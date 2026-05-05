@@ -1,6 +1,9 @@
 #ifndef DA_SECOND_PROJECT_INFOMENU_H
 #define DA_SECOND_PROJECT_INFOMENU_H
 
+#include <map>
+#include <vector>
+
 #include "allocation.h"
 #include "ExecutionPlan.h"
 

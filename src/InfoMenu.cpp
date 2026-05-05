@@ -1,7 +1,9 @@
 #include "InfoMenu.h"
 
 #include <iostream>
+#include <limits>
 #include <map>
+#include <vector>
 
 InfoMenu::InfoMenu(const std::map<std::string, std::vector<LiveRange>> &variableLiveRanges, const ExecutionPlan& executionPlan) : variableLiveRanges(variableLiveRanges), executionPlan(executionPlan) {}
 
