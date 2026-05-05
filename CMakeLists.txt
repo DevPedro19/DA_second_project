@@ -12,4 +12,6 @@ add_executable(DA_second_project
         src/WebBuilder.cpp
         include/UFDS.h
         src/UFDS.cpp
+        include/CLI.h
+        src/CLI.cpp
 )
