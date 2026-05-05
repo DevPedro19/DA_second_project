@@ -4,26 +4,28 @@
 
 #include "CLI.h"
 
+#include "TxtParser.h"
+
 CLI::CLI() = default;
 
 void CLI::setRangesFileName(const std::string &rangesFileName) {
-    std::filesystem::path p = "input/ranges";
+    std::filesystem::path p = "../input/ranges";
     p /= rangesFileName;
-    this->_rangesFileName = p.string();
+    _rangesFileName = p.string();
 }
 
 void CLI::setRegistersFileName(const std::string &registersFileName) {
-    std::filesystem::path p = "input/registers";
+    std::filesystem::path p = "../input/registers";
     p /= registersFileName;
-    this->_registersFileName = p.string();
+    _registersFileName = p.string();
 }
 
 void CLI::setOutputFileName(const std::string &outputFileName) {
-    this->_outputFileName = outputFileName;
+    _outputFileName = outputFileName;
 }
 
 void CLI::setOutputFromBatch(const bool value) {
-    this->_outputFromBatch = value;
+    _outputFromBatch = value;
 }
 
 void CLI::printTitle() {
@@ -44,10 +46,11 @@ void CLI::processArgs(const std::vector<std::string> &args) {
         }
         // Otherwise the output is put in the same as the rest
     } else {
-        const std::vector<std::string> inputFilesName = askInputFilePath();
-        checkValidInputFiles(inputFilesName[0], inputFilesName[1]);
-        setRangesFileName(inputFilesName[0]);
-        setRegistersFileName(inputFilesName[1]);
+        const std::string rangesFile = askRangeFilePath();
+        const std::string registersFile = askRegisterFilePath();
+        checkValidInputFiles(rangesFile, registersFile);
+        setRangesFileName(rangesFile);
+        setRegistersFileName(registersFile);
     }
 }
 
@@ -65,22 +68,35 @@ void CLI::checkValidInputFiles(const std::string& rangesFile, const std::string&
     }
 }
 
-void CLI::readInput(const std::string &rangesFile, const std::string &registersFile) {
+void CLI::readInput(const std::string& rangesFile, const std::string& registersFile, std::map<std::string, std::vector<LiveRange>>& variableLiveRanges, ExecutionPlan& executionPlan){
+
     TxtParser parser(rangesFile, registersFile);
-    // exec the function that will parse
+    parser.parseFiles(variableLiveRanges, executionPlan);
 }
 
-std::vector<std::string> CLI::askInputFilePath() {
+std::string CLI::askRangeFilePath() {
     constexpr char sep = std::filesystem::path::preferred_separator;
-    std::cout << "Enter input path to ranges and registers files, respectively (.txt):\n(" << std::filesystem::current_path().string() << sep << "input" << sep << ")";
-    std::string rangesFile, registersFile;
-    std::cin >> rangesFile >> registersFile;
-    return std::vector{rangesFile, registersFile};
+    std::cout << "Enter range file from ranges folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input/ranges" << sep << ")";
+    std::string rangesFile;
+    std::cin >> rangesFile;
+    return rangesFile;
 }
+
+std::string CLI::askRegisterFilePath() {
+    constexpr char sep = std::filesystem::path::preferred_separator;
+    std::cout << "Enter register file from registers folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input/registers" << sep << ")";
+    std::string registersFile;
+    std::cin >> registersFile;
+    return registersFile;
+}
+
 
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
     processArgs(args);
 
-    readInput(_rangesFileName, _registersFileName);
+    std::map<std::string, std::vector<LiveRange>> variableLiveRanges;
+    ExecutionPlan executionPlan{};
+    readInput(_rangesFileName, _registersFileName, variableLiveRanges, executionPlan);
+
 }
