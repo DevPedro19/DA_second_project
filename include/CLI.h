@@ -1,8 +1,12 @@
 #ifndef DA_SECOND_PROJECT_CLI_H
 #define DA_SECOND_PROJECT_CLI_H
 
+#include <map>
 #include <string>
 #include <vector>
+
+#include "allocation.h"
+#include "ExecutionPlan.h"
 
 /**
  * @brief The CLI class eposes all implemented funcionalities in a user-friendly manner.
@@ -29,13 +33,28 @@ public:
     static void checkValidInputFiles(const std::string& rangesFile, const std::string& registersFile);
 
     /**
-     * @brief Asks the user to input the paths to the ranges and registers files, respectively.
-     * @return A vector of strings containing the paths to the ranges and registers files, respectively.
+     * @brief Asks the user to input the file from the ranges folder
+     * @return a string with the name of ranges name.
      */
-    static std::vector<std::string> askInputFilePath();
-    
-    
-    static void readInput(const std::string& rangesFile, const std::string& registersFile /*, Data& data*/);
+    static std::string askRangeFilePath();
+
+
+    /**
+     * @brief Asks the user to input the file from the registers folder
+     * @return a string with the name of registers name
+     */
+    static std::string askRegisterFilePath();
+
+
+    /**
+     * @brief Creates a TxtParser object that will parse the files with the given result
+     * @param rangesFile string with the path to the range file
+     * @param registersFile string with the path to the range file
+     * @param variableLiveRanges map that will contain the live ranges of each variable
+     * @param executionPlan struct that tells the algorithm how it should run (registers num, variant and k parameter if used)
+     */
+    static void readInput(const std::string& rangesFile, const std::string& registersFile, std::map<std::string, std::vector<LiveRange>>&
+                          variableLiveRanges, ExecutionPlan& executionPlan);
 
     /**
      * @brief Processes the command line arguments and determines if the execution is in batch or interactive modes and behaves accordingly to check the validity of the input file's extension and set the input and output file paths.

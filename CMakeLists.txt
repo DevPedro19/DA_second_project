@@ -15,14 +15,14 @@ add_executable(DA_second_project
         include/CLI.h
         src/CLI.cpp
         include/TxtParser.h
-        src/TxtParser.cpp
         include/ExecutionPlan.h
+        include/InfoMenu.h
+        src/InfoMenu.cpp
 )
 
 add_executable(test
         include/allocation.h
         src/test.cpp
         include/TxtParser.h
-        src/TxtParser.cpp
         include/ExecutionPlan.h
 )
