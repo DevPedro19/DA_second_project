@@ -14,4 +14,15 @@ add_executable(DA_second_project
         src/UFDS.cpp
         include/CLI.h
         src/CLI.cpp
+        include/TxtParser.h
+        src/TxtParser.cpp
+        include/ExecutionPlan.h
+)
+
+add_executable(test
+        include/allocation.h
+        src/test.cpp
+        include/TxtParser.h
+        src/TxtParser.cpp
+        include/ExecutionPlan.h
 )
