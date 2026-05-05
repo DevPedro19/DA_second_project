@@ -4,6 +4,7 @@
 
 #include "CLI.h"
 
+#include "InfoMenu.h"
 #include "TxtParser.h"
 
 CLI::CLI() = default;
@@ -99,4 +100,8 @@ void CLI::execute(const std::vector<std::string> &args) {
     ExecutionPlan executionPlan{};
     readInput(_rangesFileName, _registersFileName, variableLiveRanges, executionPlan);
 
+    InfoMenu infoMenu(variableLiveRanges, executionPlan);
+    if (infoMenu.display()) {
+        // Run the algorithm
+    }
 }
