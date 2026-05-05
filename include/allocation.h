@@ -15,9 +15,7 @@ struct Line {
     LineType type;
 };
 
-struct LiveRange {
-    std::set<Line> points{}; // ex: {7, 8, 9, 10} para "7+,8,9,10-"
-};
+typedef std::set<Line> LiveRange;
 
 struct Web {
     std::string varName;    // ex: "i", "sum"

@@ -8,4 +8,15 @@ include_directories(include)
 add_executable(DA_second_project
         include/allocation.h
         src/main.cpp
+        include/TxtParser.h
+        src/TxtParser.cpp
+        include/ExecutionPlan.h
+)
+
+add_executable(test
+        include/allocation.h
+        src/test.cpp
+        include/TxtParser.h
+        src/TxtParser.cpp
+        include/ExecutionPlan.h
 )
