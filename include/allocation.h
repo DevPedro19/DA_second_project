@@ -4,24 +4,52 @@
 #include <string>
 #include <set>
 
+/**
+ * @brief Represents the type of line in a live range, which can be either the first definition of a variable's value (firstDef), a read of that value that is not the last (read), or the last read of the value (lastRead). In the input files, '+' represents a line of type firstDef, '-' represents a line of type lastRead and any line that is not marked with '+' or '-' is of type read.
+ */
 enum LineType {
     firstDef,
     read,
     lastRead,
 };
 
+/**
+ * @brief Represents a line in a live range, which is defined by its line number and its type (firstDef, read or lastRead).
+ */
 struct Line {
     int lineNum;
     LineType type;
 };
 
-struct LiveRange {
-    std::set<Line> points{}; // ex: {7, 8, 9, 10} para "7+,8,9,10-"
-};
+/**
+ * @brief Compares two lines by their line numbers, without taking into consideration the type of the line, to make the comparison restricted to the line numbers.
+ * @param l1
+ * @param l2
+ * @return
+ */
+inline bool operator<(const Line& l1, const Line& l2) {
+    return l1.lineNum < l2.lineNum;
+}
 
+/**
+ * @brief Represents a live range, which is a set of lines where a variable is alive. It is represented as a set of Line structs, which are ordered by their line numbers (without taking into consideration the type of the line).
+ */
+typedef std::set<Line> LiveRange;
+
+
+/**
+ * @brief Represents a web, which is the union of the live ranges of a variable, should they overlap at least in one line.
+ */
 struct Web {
-    std::string varName;    // ex: "i", "sum"
-    LiveRange liveWeb;      // == merge(liveRanges[varName])
+    /**
+     * @brief The name of the variable for relative to the web.
+     */
+    std::string varName;
+
+    /**
+        * @brief The live web of the variable, which is the union of all its live ranges, should they overlap at least in one line. It is represented as a set of Line structs, and for that reason, these are sorted in ascending order by their line numbers (due to the operator< overload for Line struct).
+        */
+    std::set<Line> liveWeb;
 };
 
 #endif //DA_SECOND_PROJECT_ALLOCATION_H
