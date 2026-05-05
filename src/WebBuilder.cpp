@@ -1,6 +1,7 @@
 #include "WebBuilder.h"
 #include "../data_structures/UFDS.h"
 #include <iostream>
+#include <map>
 
 WebBuilder::WebBuilder(std::string varName, std::vector<LiveRange> liveRanges) : varName(std::move(varName)), liveRanges(std::move(liveRanges)) {}
 
@@ -12,7 +13,6 @@ void WebBuilder::mergeLiveRanges(UFDS& ufds, const unsigned n) const {
         for (Line line : this->liveRanges[i]) {
 
             if (lineToLiveRange.count(line)) { // if the current line was already seen in a previous live range
-
                 ufds.linkSets(i, lineToLiveRange[line]); // merge the current live range of index i to the live range containing line
 
             } else { // if the current lineNum was never seen

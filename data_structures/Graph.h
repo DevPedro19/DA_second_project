@@ -103,7 +103,10 @@ protected:
 
 class Graph {
 public:
-    // Constructor of the interference graph
+    /**
+     * @brief Constructor of the Graph class, which initializes the vertexSet with the webs passed as a parameters in an array and creates the edges between the webs that interfere with each other.
+     * @param webs An array of webs, which will be the vertices of the graph, and for which the edges will be created based on their interference.
+     */
     explicit Graph(const std::vector<Web>& webs);
 
     ~Graph();
@@ -142,6 +145,12 @@ protected:
 
 private:
     std::vector<Vertex *> vertexSet;    // vertex set
+
+    /**
+     * @brief Auxiliary function to create the edges between the vertices of the graph based on the interference of their corresponding webs. The algorithm used keeps an array of active webs, which are the ones that will interfere the current web in a given iteration through the vertexSet. The latter is initially sorted by the line number of the first line of the web.
+     * @par Complexity
+     * Time: O(V log V + k) where V is the number of vertices and k is the number of web interferences found (the number of edges that will be created). In the worst case, k can be O(V^2) if all webs interfere with each other.
+     */
     void createEdges();
 };
 
@@ -365,10 +374,10 @@ void Edge::setFlow(double flow) {
 
 /********************** Graph  ****************************/
 
-void Graph::createEdges() {
+inline void Graph::createEdges() {
     // Create a vector of all webs, sorted by starting line number
     std::sort(vertexSet.begin(), vertexSet.end(), [] (const Vertex* v1, const Vertex* v2) {;
-        return v1->getInfo().getFirstLine().lineNum < v2->getInfo().getFirstLine().lineNum;
+        return v1->getInfo().getFirstLineNum() < v2->getInfo().getFirstLineNum();
     });
 
     std::set<Web> activeWebs; // A set to keep track of currently active webs (that will interfere with the current web being processed)
@@ -376,7 +385,7 @@ void Graph::createEdges() {
     for (const Vertex* vertex : vertexSet) {
         Web curWeb = vertex->getInfo();
 
-        while (!activeWebs.empty() && activeWebs.begin()->getLastLine().lineNum <= curWeb.getFirstLine().lineNum) {
+        while (!activeWebs.empty() && activeWebs.begin()->getLastLineNum() <= curWeb.getFirstLineNum()) {
             // Remove webs that have ended, considering the beginning of the current web
             activeWebs.erase(activeWebs.begin());
         }
@@ -389,11 +398,11 @@ void Graph::createEdges() {
     }
 }
 
-Graph::Graph(const std::vector<Web>& webs) {
+inline Graph::Graph(const std::vector<Web>& webs) {
     for (const Web& web : webs) {
         this->addVertex(web);
     }
-    createEdges(); // connect webs (nodes) that interfere with each other
+    createEdges(); // connect webs (vertices) that interfere with each other
 }
 
 
