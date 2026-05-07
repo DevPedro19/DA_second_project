@@ -9,7 +9,6 @@
 #include "TxtParser.h"
 #include "WebBuilder.h"
 #include "../data_structures/Graph.h"
-#include "GraphColoringStrategy.h"                     
 
 CLI::CLI() = default;
 
@@ -108,15 +107,16 @@ void CLI::execute(const std::vector<std::string> &args) {
     if (infoMenu.display()) {
         std::vector<Web> webs;
 
+        // Collect all webs of every variable
         for (const auto& [varName, liveRanges] : variableLiveRanges) {
             WebBuilder webBuilder(varName, liveRanges); // builds the webs associated with the current variable
             std::vector<Web> variableWebs = webBuilder.buildWebs();
 
             webs.insert(webs.end(), variableWebs.begin(), variableWebs.end());
         }
-
         Graph interferenceGraph = Graph(webs);
 
+        // Choose the strategy
         auto* graphColoringStrategy = new GraphColoringStrategy();
         if (executionPlan.algorithmVariant == basic) {
             auto* basicAlgorithm = new BasicAlgorithm();
@@ -125,19 +125,29 @@ void CLI::execute(const std::vector<std::string> &args) {
         // else if ....
 
 
-        if (!graphColoringStrategy->execute(interferenceGraph, executionPlan.registerCount)) {
-            std::cout << "Not possible" << std::endl;
-        }
-        std::set<int> colorsUsed = interferenceGraph.getColors();
-
-        for (int color : colorsUsed) {
-            std::cout << "Color " << color << ": ";
-            for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-                if (vertex->getColor() == color) {
-                    std::cout << vertex->getInfo().varName << " ";
-                }
+        // Execute the algorithm from 1 to registerCount registers
+        interferenceGraph.resetColors();
+        int regsUsed = 0;
+        for (int regCount = 1; regCount <= executionPlan.registerCount; regCount++) { // the goal is to find the minimum number of registers needed
+            if (graphColoringStrategy->execute(interferenceGraph, regCount)) {
+                regsUsed = regCount;
+                break; // break the loop as soon the algorithm works
             }
-            std::cout << std::endl;
+            interferenceGraph.resetColors();
+        }
+
+
+        // Last part of the output (not supposed to show the name of the variable but instead web0, web1,...
+        std::cout << "registers: " << regsUsed << std::endl;
+
+        for (Vertex* vertex : interferenceGraph.getVertexSet()) {
+            int vertexColor = vertex->getColor();
+            if (vertexColor == -1) std::cout << 'M';
+            else std::cout << 'r' << vertexColor;
+
+            std::cout << ": ";
+
+            std::cout << vertex->getInfo().varName << std::endl;
         }
     }
 }

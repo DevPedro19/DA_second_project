@@ -57,7 +57,7 @@ public:
 
 protected:
     Web info;                // info node
-    int color{};               // color of the node
+    int color;               // color of the node
 
     std::vector<Edge *> adj;      // outgoing edges
     std::set<int> neighborColors; // the distinct colors of the vertex's neighbors

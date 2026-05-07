@@ -22,21 +22,19 @@ bool dfs_coloring(Vertex* vertex, int color) {
 }
 
 
-bool BasicAlgorithm::execute(Graph &interferenceGraph, int numColors) {
-
-    interferenceGraph.resetColors();
+bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
 
     if (numColors == 1) {
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-            if (vertex->getAdj().size()) {
+            if (!vertex->getAdj().empty()) {
                 return false;
             }
-
             vertex->setColor(0);
-            return true;
         }
+        return true;
+    }
 
-    } else if (numColors == 2) {
+    if (numColors == 2) {
 
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
             if (vertex->getColor() == -1) { // not visited
@@ -48,7 +46,9 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int numColors) {
 
         return true;
                 
-    } else if (numColors >= 3) { // DSATUR algorithm
+    }
+
+    if (numColors >= 3) { // DSATUR algorithm
 
         MutablePriorityQueue<Vertex> pq;
 
@@ -81,6 +81,9 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int numColors) {
             }
         }
 
-        return numColors == maxColor + 1; // maxColor is 0-based
+        numColors = maxColor + 1; // maxColor is 0-based
+        return true; // DSatur finds the minimum number of colors needed to color the graph, independently of the numColors passed
     }
+
+    return false; // numColors cannot be < 1
 }

@@ -40,12 +40,12 @@ private:
     /**
      * @brief Displays the live ranges of the variables.
      */
-    void displayLiveRanges();
+    void displayLiveRanges() const;
 
     /**
      * @brief Displays the execution plan.
      */
-    void displayExecutionPlan();
+    void displayExecutionPlan() const;
 
     /**
      * @brief Reference to a map of each variable name to their corresponding live range.

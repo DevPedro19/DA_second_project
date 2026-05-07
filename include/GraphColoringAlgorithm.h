@@ -7,7 +7,7 @@ class GraphColoringAlgorithm {
 public:
     virtual ~GraphColoringAlgorithm() = default;
 
-    virtual bool execute(Graph& interferenceGraph, int numColors) = 0;
+    virtual bool execute(Graph &interferenceGraph, int &numColors) = 0;
 };
 
 #endif //DA_SECOND_PROJECT_GRAPHCOLORINGALGORITHM_H

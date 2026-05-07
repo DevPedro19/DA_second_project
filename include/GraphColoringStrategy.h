@@ -10,7 +10,7 @@ public:
     virtual ~GraphColoringStrategy() = default;
 
     void setStrategy(GraphColoringAlgorithm* graphColoringAlgorithm);
-    bool execute(Graph& interferenceGraph, int numColors);
+    bool execute(Graph &interferenceGraph, int &numColors) const;
 
 private:
     GraphColoringAlgorithm* graphColoringAlgorithm{};

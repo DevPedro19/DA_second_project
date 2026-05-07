@@ -7,6 +7,6 @@ void GraphColoringStrategy::setStrategy(GraphColoringAlgorithm* graphColoringAlg
     this->graphColoringAlgorithm = graphColoringAlgorithm;
 }
 
-bool GraphColoringStrategy::execute(Graph& interferenceGraph, int numColors) {
+bool GraphColoringStrategy::execute(Graph& interferenceGraph, int& numColors) const {
     return this->graphColoringAlgorithm->execute(interferenceGraph, numColors);
 }

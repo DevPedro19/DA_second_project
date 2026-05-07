@@ -10,7 +10,7 @@
 
 class BasicAlgorithm : public GraphColoringAlgorithm {
 public:
-    bool execute(Graph& interferenceGraph, int numColors) override;
+    bool execute(Graph &interferenceGraph, int &numColors) override;
 };
 
 #endif //DA_SECOND_PROJECT_BASICALGORITHM_H
