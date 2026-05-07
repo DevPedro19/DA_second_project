@@ -29,4 +29,6 @@ add_executable(DA_second_project
         
         src/BasicAlgorithm.cpp
         src/GraphColoringStrategy.cpp
+        include/OutputWriter.h
+        src/OutputWriter.cpp
 )
