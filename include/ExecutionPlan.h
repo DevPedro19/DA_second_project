@@ -9,7 +9,7 @@
 /**
  * @brief This enum represents the different variants of the register allocation algorithm that can be used in the execution plan.
  */
-enum algorithmVariants {
+enum AlgorithmVariant {
     basic,
     splitting,
     spilling
@@ -21,7 +21,7 @@ enum algorithmVariants {
  */
 struct ExecutionPlan {
     int registerCount;
-    algorithmVariants algorithmVariant;
+    AlgorithmVariant algorithmVariant;
     int k;
 };
 

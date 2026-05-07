@@ -19,7 +19,7 @@ void InfoMenu::displayOptions() {
               << "  Select an option (1-4): ";
 }
 
-void InfoMenu::displayLiveRanges() {
+void InfoMenu::displayLiveRanges() const {
     std::cout << "\n=== Live Ranges List ===" << std::endl;
 
     for (const auto& [varName, liveRanges] : variableLiveRanges) {
@@ -35,7 +35,7 @@ void InfoMenu::displayLiveRanges() {
     }
 }
 
-void InfoMenu::displayExecutionPlan() {
+void InfoMenu::displayExecutionPlan() const {
     std::cout << "\n=== Execution Plan ===" << std::endl;
 
     std::cout << "  Register Count: " << executionPlan.registerCount << std::endl;
