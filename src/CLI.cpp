@@ -6,6 +6,7 @@
 #include "BasicAlgorithm.h"
 #include "GraphColoringStrategy.h"
 #include "InfoMenu.h"
+#include "OutputWriter.h"
 #include "TxtParser.h"
 #include "WebBuilder.h"
 #include "../data_structures/Graph.h"
@@ -78,6 +79,14 @@ void CLI::readInput(const std::string& rangesFile, const std::string& registersF
     parser.parseFiles(variableLiveRanges, executionPlan);
 }
 
+void CLI::writeOutput(const Graph& interferenceGraph, const int registersUsed, const std::string& outputFileName) {
+    if (!_outputFromBatch) {
+        setOutputFileName(outputFileName);
+    }
+    const OutputWriter outputWriter(outputFileName);
+    outputWriter.writeOutput(interferenceGraph, registersUsed);
+}
+
 std::string CLI::askRangeFilePath() {
     constexpr char sep = std::filesystem::path::preferred_separator;
     std::cout << "Enter range file from ranges folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input/ranges" << sep << ")";
@@ -93,7 +102,6 @@ std::string CLI::askRegisterFilePath() {
     std::cin >> registersFile;
     return registersFile;
 }
-
 
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
@@ -136,18 +144,7 @@ void CLI::execute(const std::vector<std::string> &args) {
             interferenceGraph.resetColors();
         }
 
-
-        // Last part of the output (not supposed to show the name of the variable but instead web0, web1,...
-        std::cout << "registers: " << regsUsed << std::endl;
-
-        for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-            int vertexColor = vertex->getColor();
-            if (vertexColor == -1) std::cout << 'M';
-            else std::cout << 'r' << vertexColor;
-
-            std::cout << ": ";
-
-            std::cout << vertex->getInfo().varName << std::endl;
-        }
+        //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit
+        writeOutput(interferenceGraph, regsUsed, "output.txt");
     }
 }
