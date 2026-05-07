@@ -3,9 +3,13 @@
 #include <vector>
 
 #include "CLI.h"
-
+#include "BasicAlgorithm.h"
+#include "GraphColoringStrategy.h"
 #include "InfoMenu.h"
 #include "TxtParser.h"
+#include "WebBuilder.h"
+#include "../data_structures/Graph.h"
+#include "GraphColoringStrategy.h"                     
 
 CLI::CLI() = default;
 
@@ -102,6 +106,38 @@ void CLI::execute(const std::vector<std::string> &args) {
 
     InfoMenu infoMenu(variableLiveRanges, executionPlan);
     if (infoMenu.display()) {
-        // Run the algorithm
+        std::vector<Web> webs;
+
+        for (const auto& [varName, liveRanges] : variableLiveRanges) {
+            WebBuilder webBuilder(varName, liveRanges); // builds the webs associated with the current variable
+            std::vector<Web> variableWebs = webBuilder.buildWebs();
+
+            webs.insert(webs.end(), variableWebs.begin(), variableWebs.end());
+        }
+
+        Graph interferenceGraph = Graph(webs);
+
+        auto* graphColoringStrategy = new GraphColoringStrategy();
+        if (executionPlan.algorithmVariant == basic) {
+            auto* basicAlgorithm = new BasicAlgorithm();
+            graphColoringStrategy->setStrategy(basicAlgorithm);
+        }
+        // else if ....
+
+
+        if (!graphColoringStrategy->execute(interferenceGraph, executionPlan.registerCount)) {
+            std::cout << "Not possible" << std::endl;
+        }
+        std::set<int> colorsUsed = interferenceGraph.getColors();
+
+        for (int color : colorsUsed) {
+            std::cout << "Color " << color << ": ";
+            for (Vertex* vertex : interferenceGraph.getVertexSet()) {
+                if (vertex->getColor() == color) {
+                    std::cout << vertex->getInfo().varName << " ";
+                }
+            }
+            std::cout << std::endl;
+        }
     }
 }

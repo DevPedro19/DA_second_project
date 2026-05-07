@@ -12,6 +12,9 @@ add_executable(DA_second_project
         include/TxtParser.h
         include/ExecutionPlan.h
         include/InfoMenu.h
+        include/GraphColoringStrategy.h
+        include/GraphColoringAlgorithm.h
+        include/BasicAlgorithm.h
 
         data_structures/UFDS.h
         data_structures/Graph.h
@@ -22,4 +25,8 @@ add_executable(DA_second_project
         src/CLI.cpp
         src/InfoMenu.cpp
         src/TxtParser.cpp
+        
+        
+        src/BasicAlgorithm.cpp
+        src/GraphColoringStrategy.cpp
 )

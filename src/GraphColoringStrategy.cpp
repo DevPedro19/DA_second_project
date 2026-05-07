@@ -1,0 +1,12 @@
+#include "GraphColoringStrategy.h"
+#include "GraphColoringAlgorithm.h"
+
+GraphColoringStrategy::GraphColoringStrategy() = default;
+
+void GraphColoringStrategy::setStrategy(GraphColoringAlgorithm* graphColoringAlgorithm) {
+    this->graphColoringAlgorithm = graphColoringAlgorithm;
+}
+
+bool GraphColoringStrategy::execute(Graph& interferenceGraph, int numColors) {
+    return this->graphColoringAlgorithm->execute(interferenceGraph, numColors);
+}

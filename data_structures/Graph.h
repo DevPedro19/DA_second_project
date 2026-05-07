@@ -11,6 +11,8 @@
 #include <iostream>
 #include <vector>
 
+#include "MutablePriorityQueue.h"
+
 class Edge;
 
 #define INF std::numeric_limits<double>::max()
@@ -27,42 +29,49 @@ public:
     std::vector<Edge *> getAdj() const;
     bool isVisited() const;
     bool isProcessing() const;
-    unsigned int getIndegree() const;
+    unsigned int getDegree() const;
     double getDist() const;
     Edge *getPath() const;
     std::vector<Edge *> getIncoming() const;
 
+    void setColor(int color);
+    void setNeighborColors(std::set<int> neighborColors);
     void setInfo(Web info);
     void setVisited(bool visited);
     void setProcessing(bool processing);
+    void setNum(int value);
 
+    int getColor() const;
+    std::set<int> getNeighborColors() const;
     int getLow() const;
     void setLow(int value);
     int getNum() const;
-    void setNum(int value);
+    
 
-    void setIndegree(unsigned int indegree);
     void setDist(double dist);
     void setPath(Edge *path);
     Edge * addEdge(Vertex *dest, double w);
     bool removeEdge(Web in);
     void removeOutgoingEdges();
+    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
 protected:
     Web info;                // info node
-    std::vector<Edge *> adj;  // outgoing edges
+    int color{};               // color of the node
+
+    std::vector<Edge *> adj;      // outgoing edges
+    std::set<int> neighborColors; // the distinct colors of the vertex's neighbors
 
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     int low = -1, num = -1; // used by SCC Tarjan
-    unsigned int indegree; // used by topsort
+    unsigned int degree{}; // used by topsort
     double dist = 0;
     Edge *path = nullptr;
 
     std::vector<Edge *> incoming; // incoming edges
 
-    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     void deleteEdge(Edge *edge);
 };
@@ -95,7 +104,7 @@ protected:
     Vertex *orig;
     Edge *reverse = nullptr;
 
-    double flow; // for flow-related problems
+    double flow{}; // for flow-related problems
 };
 
 /********************** Graph  ****************************/
@@ -130,9 +139,13 @@ public:
     bool removeEdge(const Web &source, const Web &dest);
     bool addBidirectionalEdge(const Web &sourc, const Web &dest, double w);
 
+    void resetColors();
+    std::set<int> getColors() const;
+
     int getNumVertex() const;
     std::vector<Vertex*> getVertexSet() const;
 
+    friend class MutablePriorityQueue<Vertex>;
 protected:
 
     double ** distMatrix = nullptr;   // dist matrix for Floyd-Warshall
@@ -161,13 +174,12 @@ void deleteMatrix(double **m, int n);
 /************************* Vertex  **************************/
 
 
-Vertex::Vertex(Web in): info(in) {}
+inline Vertex::Vertex(Web in): info(in) {}
 /*
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
-
-Edge * Vertex::addEdge(Vertex *d, double w) {
+inline Edge * Vertex::addEdge(Vertex *d, double w) {
     auto newEdge = new Edge(this, d, w);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
@@ -180,7 +192,7 @@ Edge * Vertex::addEdge(Vertex *d, double w) {
  * Returns true if successful, and false if such edge does not exist.
  */
 
-bool Vertex::removeEdge(Web in) {
+inline bool Vertex::removeEdge(Web in) {
     bool removedEdge = false;
     auto it = adj.begin();
     while (it != adj.end()) {
@@ -201,8 +213,7 @@ bool Vertex::removeEdge(Web in) {
 /*
  * Auxiliary function to remove an outgoing edge of a vertex.
  */
-
-void Vertex::removeOutgoingEdges() {
+inline void Vertex::removeOutgoingEdges() {
     auto it = adj.begin();
     while (it != adj.end()) {
         Edge *edge = *it;
@@ -212,102 +223,115 @@ void Vertex::removeOutgoingEdges() {
 }
 
 
-bool Vertex::operator<(Vertex & vertex) const {
-    return this->dist < vertex.dist;
+inline bool Vertex::operator<(Vertex & vertex) const { // this implies heapifying up in the MutablePriorityQueue
+    if (this->neighborColors.size() == vertex.neighborColors.size()) {
+        return this->getDegree() > vertex.getDegree(); // in case of tie, "randomly" choose the lower one
+    }
+    return this->neighborColors.size() > vertex.neighborColors.size();
 }
 
 
-Web Vertex::getInfo() const {
+inline Web Vertex::getInfo() const {
     return this->info;
 }
 
 
-int Vertex::getLow() const {
+inline int Vertex::getLow() const {
     return this->low;
 }
 
 
-void Vertex::setLow(int value) {
+inline void Vertex::setLow(int value) {
     this->low = value;
 }
 
 
-int Vertex::getNum() const {
+inline int Vertex::getNum() const {
     return this->num;
 }
 
 
-void Vertex::setNum(int value) {
+inline void Vertex::setColor(int color) {
+    this->color = color;
+}
+
+inline int Vertex::getColor() const {
+    return this->color;
+}
+
+inline void Vertex::setNeighborColors(std::set<int> neighborColors) {
+    this->neighborColors = neighborColors;
+}
+
+inline std::set<int> Vertex::getNeighborColors() const {
+    return this->neighborColors;
+}
+
+inline void Vertex::setNum(int value) {
     this->num = value;
 }
 
 
-std::vector<Edge*> Vertex::getAdj() const {
+inline std::vector<Edge*> Vertex::getAdj() const {
     return this->adj;
 }
 
 
-bool Vertex::isVisited() const {
+inline bool Vertex::isVisited() const {
     return this->visited;
 }
 
 
-bool Vertex::isProcessing() const {
+inline bool Vertex::isProcessing() const {
     return this->processing;
 }
 
 
-unsigned int Vertex::getIndegree() const {
-    return this->indegree;
+inline unsigned int Vertex::getDegree() const {
+    return this->adj.size();
 }
 
 
-double Vertex::getDist() const {
+inline double Vertex::getDist() const {
     return this->dist;
 }
 
 
-Edge *Vertex::getPath() const {
+inline Edge *Vertex::getPath() const {
     return this->path;
 }
 
 
-std::vector<Edge *> Vertex::getIncoming() const {
+inline std::vector<Edge *> Vertex::getIncoming() const {
     return this->incoming;
 }
 
 
-void Vertex::setInfo(Web in) {
+inline void Vertex::setInfo(Web in) {
     this->info = in;
 }
 
 
-void Vertex::setVisited(bool visited) {
+inline void Vertex::setVisited(bool visited) {
     this->visited = visited;
 }
 
 
-void Vertex::setProcessing(bool processing) {
+inline void Vertex::setProcessing(bool processing) {
     this->processing = processing;
 }
 
-
-void Vertex::setIndegree(unsigned int indegree) {
-    this->indegree = indegree;
-}
-
-
-void Vertex::setDist(double dist) {
+inline void Vertex::setDist(double dist) {
     this->dist = dist;
 }
 
 
-void Vertex::setPath(Edge *path) {
+inline void Vertex::setPath(Edge *path) {
     this->path = path;
 }
 
 
-void Vertex::deleteEdge(Edge *edge) {
+inline void Vertex::deleteEdge(Edge *edge) {
     Vertex *dest = edge->getDest();
     // Remove the corresponding edge from the incoming list
     auto it = dest->incoming.begin();
@@ -325,50 +349,50 @@ void Vertex::deleteEdge(Edge *edge) {
 /********************** Edge  ****************************/
 
 
-Edge::Edge(Vertex *orig, Vertex *dest, double w): orig(orig), dest(dest), weight(w) {}
+inline Edge::Edge(Vertex *orig, Vertex *dest, double w): orig(orig), dest(dest), weight(w) {}
 
 
-Vertex * Edge::getDest() const {
+inline Vertex * Edge::getDest() const {
     return this->dest;
 }
 
 
-double Edge::getWeight() const {
+inline double Edge::getWeight() const {
     return this->weight;
 }
 
 
-Vertex * Edge::getOrig() const {
+inline Vertex * Edge::getOrig() const {
     return this->orig;
 }
 
 
-Edge *Edge::getReverse() const {
+inline Edge *Edge::getReverse() const {
     return this->reverse;
 }
 
 
-bool Edge::isSelected() const {
+inline bool Edge::isSelected() const {
     return this->selected;
 }
 
 
-double Edge::getFlow() const {
+inline double Edge::getFlow() const {
     return flow;
 }
 
 
-void Edge::setSelected(bool selected) {
+inline void Edge::setSelected(bool selected) {
     this->selected = selected;
 }
 
 
-void Edge::setReverse(Edge *reverse) {
+inline void Edge::setReverse(Edge *reverse) {
     this->reverse = reverse;
 }
 
 
-void Edge::setFlow(double flow) {
+inline void Edge::setFlow(double flow) {
     this->flow = flow;
 }
 
@@ -406,12 +430,12 @@ inline Graph::Graph(const std::vector<Web>& webs) {
 }
 
 
-int Graph::getNumVertex() const {
+inline int Graph::getNumVertex() const {
     return vertexSet.size();
 }
 
 
-std::vector<Vertex *> Graph::getVertexSet() const {
+inline std::vector<Vertex *> Graph::getVertexSet() const {
     return vertexSet;
 }
 
@@ -419,7 +443,7 @@ std::vector<Vertex *> Graph::getVertexSet() const {
  * Auxiliary function to find a vertex with a given content.
  */
 
-Vertex * Graph::findVertex(const Web &in) const {
+inline Vertex * Graph::findVertex(const Web &in) const {
     for (auto v : vertexSet)
         if (v->getInfo() == in)
             return v;
@@ -430,7 +454,7 @@ Vertex * Graph::findVertex(const Web &in) const {
  * Finds the index of the vertex with a given content.
  */
 
-int Graph::findVertexIdx(const Web &in) const {
+inline int Graph::findVertexIdx(const Web &in) const {
     for (unsigned i = 0; i < vertexSet.size(); i++)
         if (vertexSet[i]->getInfo() == in)
             return i;
@@ -441,7 +465,7 @@ int Graph::findVertexIdx(const Web &in) const {
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
 
-bool Graph::addVertex(const Web &in) {
+inline bool Graph::addVertex(const Web &in) {
     if (findVertex(in) != nullptr)
         return false;
     vertexSet.push_back(new Vertex(in));
@@ -454,7 +478,7 @@ bool Graph::addVertex(const Web &in) {
  *  Returns true if successful, and false if such vertex does not exist.
  */
 
-bool Graph::removeVertex(const Web &in) {
+inline bool Graph::removeVertex(const Web &in) {
     for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
         if ((*it)->getInfo() == in) {
             auto v = *it;
@@ -476,7 +500,7 @@ bool Graph::removeVertex(const Web &in) {
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 
-bool Graph::addEdge(const Web &sourc, const Web &dest, double w) {
+inline bool Graph::addEdge(const Web &sourc, const Web &dest, double w) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
@@ -491,7 +515,7 @@ bool Graph::addEdge(const Web &sourc, const Web &dest, double w) {
  * Returns true if successful, and false if such edge does not exist.
  */
 
-bool Graph::removeEdge(const Web &sourc, const Web &dest) {
+inline bool Graph::removeEdge(const Web &sourc, const Web &dest) {
     Vertex * srcVertex = findVertex(sourc);
     if (srcVertex == nullptr) {
         return false;
@@ -500,7 +524,7 @@ bool Graph::removeEdge(const Web &sourc, const Web &dest) {
 }
 
 
-bool Graph::addBidirectionalEdge(const Web &sourc, const Web &dest, double w) {
+inline bool Graph::addBidirectionalEdge(const Web &sourc, const Web &dest, double w) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
@@ -530,8 +554,24 @@ inline void deleteMatrix(double **m, int n) {
     }
 }
 
+inline void Graph::resetColors() {
+    for (Vertex* vertex : vertexSet) {
+        vertex->setColor(-1);
+    }
+}
 
-Graph::~Graph() {
+inline std::set<int> Graph::getColors() const {
+    std::set<int> colors;
+    for (Vertex* vertex : vertexSet) {
+        if (vertex->getColor() != -1) {
+            colors.insert(vertex->getColor());
+        }
+    }
+    return colors;
+}
+
+
+inline Graph::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());
     deleteMatrix(pathMatrix, vertexSet.size());
 }
