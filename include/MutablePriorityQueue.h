@@ -15,8 +15,9 @@
  * class T must have: (i) accessible field int queueIndex; (ii) operator< defined.
  */
 
-template <class T>
+template <class T, class Compare>
 class MutablePriorityQueue {
+    Compare comp; // comparison function to use with the priority queue's elements
     std::vector<T *> H;
     void heapifyUp(unsigned i);
     void heapifyDown(unsigned i);
@@ -33,20 +34,20 @@ public:
 #define parent(i) ((i) / 2)
 #define leftChild(i) ((i) * 2)
 
-template <class T>
-MutablePriorityQueue<T>::MutablePriorityQueue() {
+template <class T, class Compare>
+MutablePriorityQueue<T, Compare>::MutablePriorityQueue() {
     H.push_back(nullptr);
     // indices will be used starting in 1
     // to facilitate parent/child calculations
 }
 
-template <class T>
-bool MutablePriorityQueue<T>::empty() {
+template <class T, class Compare>
+bool MutablePriorityQueue<T, Compare>::empty() {
     return H.size() == 1;
 }
 
-template <class T>
-T* MutablePriorityQueue<T>::extractMin() {
+template <class T, class Compare>
+T* MutablePriorityQueue<T, Compare>::extractMin() {
     auto x = H[1];
     H[1] = H.back();
     H.pop_back();
@@ -55,37 +56,37 @@ T* MutablePriorityQueue<T>::extractMin() {
     return x;
 }
 
-template <class T>
-void MutablePriorityQueue<T>::insert(T *x) {
+template <class T, class Compare>
+void MutablePriorityQueue<T, Compare>::insert(T *x) {
     H.push_back(x);
     heapifyUp(H.size()-1);
 }
 
-template <class T>
-void MutablePriorityQueue<T>::decreaseKey(T *x) {
+template <class T, class Compare>
+void MutablePriorityQueue<T, Compare>::decreaseKey(T *x) {
     heapifyUp(x->queueIndex);
 }
 
-template <class T>
-void MutablePriorityQueue<T>::heapifyUp(unsigned i) {
+template <class T, class Compare>
+void MutablePriorityQueue<T, Compare>::heapifyUp(unsigned i) {
     auto x = H[i];
-    while (i > 1 && *x < *H[parent(i)]) {
+    while (i > 1 && comp(*x, *H[parent(i)])) {
         set(i, H[parent(i)]);
         i = parent(i);
     }
     set(i, x);
 }
 
-template <class T>
-void MutablePriorityQueue<T>::heapifyDown(unsigned i) {
+template <class T, class Compare>
+void MutablePriorityQueue<T, Compare>::heapifyDown(unsigned i) {
     auto x = H[i];
     while (true) {
         unsigned k = leftChild(i);
         if (k >= H.size())
             break;
-        if (k+1 < H.size() && *H[k+1] < *H[k])
+        if (k+1 < H.size() && comp(*H[k+1], *H[k]))
             ++k; // right child of i
-        if ( ! (*H[k] < *x) )
+        if ( ! comp(*H[k], *x) )
             break;
         set(i, H[k]);
         i = k;
@@ -93,8 +94,8 @@ void MutablePriorityQueue<T>::heapifyDown(unsigned i) {
     set(i, x);
 }
 
-template <class T>
-void MutablePriorityQueue<T>::set(unsigned i, T * x) {
+template <class T, class Compare>
+void MutablePriorityQueue<T, Compare>::set(unsigned i, T * x) {
     H[i] = x;
     x->queueIndex = i;
 }

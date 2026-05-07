@@ -31,4 +31,6 @@ add_executable(DA_second_project
         src/GraphColoringStrategy.cpp
         include/OutputWriter.h
         src/OutputWriter.cpp
+        include/SpillingAlgorithm.h
+        src/SpillingAlgorithm.cpp
 )

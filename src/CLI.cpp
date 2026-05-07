@@ -7,6 +7,7 @@
 #include "GraphColoringStrategy.h"
 #include "InfoMenu.h"
 #include "OutputWriter.h"
+#include "SpillingAlgorithm.h"
 #include "TxtParser.h"
 #include "WebBuilder.h"
 #include "../data_structures/Graph.h"
@@ -103,6 +104,31 @@ std::string CLI::askRegisterFilePath() {
     return registersFile;
 }
 
+int executeBasicAlgorithm(Graph& interferenceGraph, int maxRegisters, GraphColoringStrategy* strategy) {
+    // Execute the algorithm from 1 to registerCount registers
+    interferenceGraph.resetColors();
+    int regsUsed = 0;
+    for (int regCount = 1; regCount <= maxRegisters; regCount++) { // the goal is to find the minimum number of registers needed
+        if (strategy->execute(interferenceGraph, regCount)) {
+            regsUsed = regCount;
+            break; // break the loop as soon the algorithm works
+        }
+        interferenceGraph.resetColors();
+    }
+    return regsUsed;
+}
+
+struct SpillingComparator { // functor
+    bool operator()(const Vertex& a, const Vertex& b) const {
+        if (a.getNeighborColors().size() == b.getNeighborColors().size()) {
+            return a.getDegree() > b.getDegree();
+        }
+        return a.getNeighborColors().size() > b.getNeighborColors().size();
+    }
+};
+
+
+
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
     processArgs(args);
@@ -126,23 +152,27 @@ void CLI::execute(const std::vector<std::string> &args) {
 
         // Choose the strategy
         auto* graphColoringStrategy = new GraphColoringStrategy();
-        if (executionPlan.algorithmVariant == basic) {
-            auto* basicAlgorithm = new BasicAlgorithm();
-            graphColoringStrategy->setStrategy(basicAlgorithm);
-        }
-        // else if ....
+
+        auto* basicAlgorithm = new BasicAlgorithm();
+        graphColoringStrategy->setStrategy(basicAlgorithm);
+
+        int regsUsed = executeBasicAlgorithm(interferenceGraph, executionPlan.registerCount, graphColoringStrategy);
+
+        if (regsUsed == 0) { // could not color
+
+            if (executionPlan.algorithmVariant == spilling) {
 
 
-        // Execute the algorithm from 1 to registerCount registers
-        interferenceGraph.resetColors();
-        int regsUsed = 0;
-        for (int regCount = 1; regCount <= executionPlan.registerCount; regCount++) { // the goal is to find the minimum number of registers needed
-            if (graphColoringStrategy->execute(interferenceGraph, regCount)) {
-                regsUsed = regCount;
-                break; // break the loop as soon the algorithm works
+
+                // Criar uma heap com novas condições:
+                //  1. Maior degree
+                //  2. Maior soma de degrees dos vizinhos
+
+
             }
-            interferenceGraph.resetColors();
         }
+
+
 
         //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit
         writeOutput(interferenceGraph, regsUsed, "output.txt");

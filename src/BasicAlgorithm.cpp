@@ -1,5 +1,17 @@
 #include "BasicAlgorithm.h"
 #include "MutablePriorityQueue.h"
+#include "../data_structures/Graph.h"
+
+
+struct DSATURComparator { // functor
+    bool operator()(const Vertex& a, const Vertex& b) const {
+        if (a.getNeighborColors().size() == b.getNeighborColors().size()) {
+            return a.getDegree() > b.getDegree();
+        }
+        return a.getNeighborColors().size() > b.getNeighborColors().size();
+    }
+};
+
 
 // Alternating colors 0 and 1
 bool dfs_coloring(Vertex* vertex, int color) {
@@ -24,6 +36,7 @@ bool dfs_coloring(Vertex* vertex, int color) {
 
 bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
 
+    //TODO: create functions for each algorithm
     if (numColors == 1) {
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
             if (!vertex->getAdj().empty()) {
@@ -50,7 +63,7 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
 
     if (numColors >= 3) { // DSATUR algorithm
 
-        MutablePriorityQueue<Vertex> pq;
+        MutablePriorityQueue<Vertex, DSATURComparator> pq;
 
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
             pq.insert(vertex);

@@ -222,15 +222,6 @@ inline void Vertex::removeOutgoingEdges() {
     }
 }
 
-
-inline bool Vertex::operator<(Vertex & vertex) const { // this implies heapifying up in the MutablePriorityQueue
-    if (this->neighborColors.size() == vertex.neighborColors.size()) {
-        return this->getDegree() > vertex.getDegree(); // in case of tie, "randomly" choose the lower one
-    }
-    return this->neighborColors.size() > vertex.neighborColors.size();
-}
-
-
 inline Web Vertex::getInfo() const {
     return this->info;
 }
