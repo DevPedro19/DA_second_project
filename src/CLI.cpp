@@ -105,17 +105,20 @@ std::string CLI::askRegisterFilePath() {
     return registersFile;
 }
 
-int executeBasicAlgorithm(Graph& interferenceGraph, int maxRegisters, GraphColoringStrategy* strategy) {
-    // Execute the algorithm from 1 to registerCount registers
+int tryBasicAlgorithm(Graph& interferenceGraph, int maxRegisters) {
+    BasicAlgorithm basicAlgorithm;
     interferenceGraph.resetColors();
+
     int regsUsed = 0;
-    for (int regCount = 1; regCount <= maxRegisters; regCount++) { // the goal is to find the minimum number of registers needed
-        if (strategy->execute(interferenceGraph, regCount)) {
+    // Execute the algorithm from 1 to registerCount registers, because the goal is to find the minimum number of registers needed
+    for (int regCount = 1; regCount <= maxRegisters; regCount++) {
+        if (basicAlgorithm.execute(interferenceGraph, regCount)) {
             regsUsed = regCount;
             break; // break the loop as soon the algorithm works
         }
         interferenceGraph.resetColors();
     }
+
     return regsUsed;
 }
 
@@ -128,6 +131,19 @@ bool spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
+// Collects webs of all variable
+std::vector<Web> collectWebs(const std::map<std::string, std::vector<LiveRange>>& variableLiveRanges) {
+    std::vector<Web> webs;
+    // Collect all webs of every variable
+    for (const auto& [varName, liveRanges] : variableLiveRanges) {
+        WebBuilder webBuilder(varName, liveRanges); // builds the webs associated with the current variable
+        std::vector<Web> variableWebs = webBuilder.buildWebs();
+
+        webs.insert(webs.end(), variableWebs.begin(), variableWebs.end());
+    }
+    return webs;
+}
+
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
     processArgs(args);
@@ -137,29 +153,15 @@ void CLI::execute(const std::vector<std::string> &args) {
     readInput(_rangesFileName, _registersFileName, variableLiveRanges, executionPlan);
 
     InfoMenu infoMenu(variableLiveRanges, executionPlan);
-    if (infoMenu.display()) {
-        std::vector<Web> webs;
-
-        // Collect all webs of every variable
-        for (const auto& [varName, liveRanges] : variableLiveRanges) {
-            WebBuilder webBuilder(varName, liveRanges); // builds the webs associated with the current variable
-            std::vector<Web> variableWebs = webBuilder.buildWebs();
-
-            webs.insert(webs.end(), variableWebs.begin(), variableWebs.end());
-        }
+    if (infoMenu.display()) { // if the Run Algorithm option was selected
+        std::vector<Web> webs = collectWebs(variableLiveRanges);
         Graph interferenceGraph = Graph(webs);
-
-        // Choose the strategy
-        auto* graphColoringStrategy = new GraphColoringStrategy();
-
-        auto* basicAlgorithm = new BasicAlgorithm();
-        graphColoringStrategy->setStrategy(basicAlgorithm);
-
-        int regsUsed = executeBasicAlgorithm(interferenceGraph, executionPlan.registerCount, graphColoringStrategy);
+        int regsUsed = tryBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
 
         if (regsUsed == 0) { // could not color
 
             if (executionPlan.algorithmVariant == spilling) {
+
                 MutablePriorityQueue<Vertex> pq(spillingComp);
 
                 for (Vertex* vertex : interferenceGraph.getVertexSet()) {
@@ -176,12 +178,11 @@ void CLI::execute(const std::vector<std::string> &args) {
                         pq.decreaseKey(neighbor);
                     }
 
-                    regsUsed = executeBasicAlgorithm(interferenceGraph, executionPlan.registerCount, graphColoringStrategy);
+                    regsUsed = tryBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
                     if (regsUsed) break; // was possible with 'spilledRegs' spilled registers
                 }
             }
         }
-
 
         //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit
         writeOutput(interferenceGraph, regsUsed, "output.txt");

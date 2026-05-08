@@ -1,7 +1,3 @@
-//
-// Created by guilhermecunha on 06/05/26.
-//
-
 #ifndef DA_SECOND_PROJECT_BASICALGORITHM_H
 #define DA_SECOND_PROJECT_BASICALGORITHM_H
 
