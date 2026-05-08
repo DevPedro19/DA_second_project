@@ -23,7 +23,7 @@ void OutputWriter::writeRegisters(std::ofstream& ofs, const Graph& interferenceG
     int count = 0;
     for (const auto web : interferenceGraph.getVertexSet()) {
         int color = web->getColor();
-        if (color != -1) {
+        if (color != -1 && web->isActive()) { // colored and not spilled
             ofs << "r" << color << ": ";
         } else {
             ofs << "M: ";

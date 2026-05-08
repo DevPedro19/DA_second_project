@@ -11,6 +11,7 @@
 #include "TxtParser.h"
 #include "WebBuilder.h"
 #include "../data_structures/Graph.h"
+#include "../data_structures/MutablePriorityQueue.h"
 
 CLI::CLI() = default;
 
@@ -118,16 +119,14 @@ int executeBasicAlgorithm(Graph& interferenceGraph, int maxRegisters, GraphColor
     return regsUsed;
 }
 
-struct SpillingComparator { // functor
-    bool operator()(const Vertex& a, const Vertex& b) const {
-        if (a.getNeighborColors().size() == b.getNeighborColors().size()) {
-            return a.getDegree() > b.getDegree();
-        }
-        return a.getNeighborColors().size() > b.getNeighborColors().size();
+//  1. Higher degree
+//  2. Higher neighbor degree sum
+bool spillingComp(const Vertex& v1, const Vertex& v2) {
+    if (v1.getDegree() == v2.getDegree()) {
+        return v1.getNeighborDegreeSum() > v2.getNeighborDegreeSum(); // extends on the definition of "difficult-to-color vertex"
     }
-};
-
-
+    return v1.getDegree() > v2.getDegree();
+}
 
 void CLI::execute(const std::vector<std::string> &args) {
     printTitle();
@@ -161,17 +160,27 @@ void CLI::execute(const std::vector<std::string> &args) {
         if (regsUsed == 0) { // could not color
 
             if (executionPlan.algorithmVariant == spilling) {
+                MutablePriorityQueue<Vertex> pq(spillingComp);
 
+                for (Vertex* vertex : interferenceGraph.getVertexSet()) {
+                    if (vertex->isActive()) pq.insert(vertex);
+                }
 
+                for (int spilledRegs = 1; spilledRegs <= executionPlan.k; spilledRegs++) {
+                    Vertex* spilledReg = pq.extractMin(); // spill a register
+                    spilledReg->disable(); // disable the register node in the graph
 
-                // Criar uma heap com novas condições:
-                //  1. Maior degree
-                //  2. Maior soma de degrees dos vizinhos
+                    // update the priority queue
+                    for (Edge* edge : spilledReg->getActiveAdj()) {
+                        Vertex* neighbor = edge->getDest();
+                        pq.decreaseKey(neighbor);
+                    }
 
-
+                    regsUsed = executeBasicAlgorithm(interferenceGraph, executionPlan.registerCount, graphColoringStrategy);
+                    if (regsUsed) break; // was possible with 'spilledRegs' spilled registers
+                }
             }
         }
-
 
 
         //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit

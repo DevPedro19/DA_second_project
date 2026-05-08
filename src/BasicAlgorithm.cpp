@@ -1,23 +1,20 @@
 #include "BasicAlgorithm.h"
-#include "MutablePriorityQueue.h"
+#include "../data_structures/MutablePriorityQueue.h"
 #include "../data_structures/Graph.h"
 
 
-struct DSATURComparator { // functor
-    bool operator()(const Vertex& a, const Vertex& b) const {
-        if (a.getNeighborColors().size() == b.getNeighborColors().size()) {
-            return a.getDegree() > b.getDegree();
-        }
-        return a.getNeighborColors().size() > b.getNeighborColors().size();
+bool comp(const Vertex& v1, const Vertex& v2) {
+    if (v1.getNeighborColors().size() == v2.getNeighborColors().size()) {
+        return v1.getDegree() > v2.getDegree();
     }
-};
-
+    return v1.getNeighborColors().size() > v2.getNeighborColors().size();
+}
 
 // Alternating colors 0 and 1
 bool dfs_coloring(Vertex* vertex, int color) {
     vertex->setColor(color);
 
-    for (const Edge* edge : vertex->getAdj()) {
+    for (const Edge* edge : vertex->getActiveAdj()) {
         Vertex* neighbor = edge->getDest();
 
         if (neighbor->getColor() == -1) { // not visited
@@ -29,7 +26,6 @@ bool dfs_coloring(Vertex* vertex, int color) {
             return false;
         }
     }
-
     return true;
 }
 
@@ -39,7 +35,7 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
     //TODO: create functions for each algorithm
     if (numColors == 1) {
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-            if (!vertex->getAdj().empty()) {
+            if (vertex->isActive() && !vertex->getActiveAdj().empty()) {
                 return false;
             }
             vertex->setColor(0);
@@ -50,7 +46,7 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
     if (numColors == 2) {
 
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-            if (vertex->getColor() == -1) { // not visited
+            if (vertex->isActive() && vertex->getColor() == -1) { // not visited and active
                 if (!dfs_coloring(vertex, 0)) { // start with color 0
                     return false;
                 }
@@ -63,10 +59,10 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
 
     if (numColors >= 3) { // DSATUR algorithm
 
-        MutablePriorityQueue<Vertex, DSATURComparator> pq;
+        MutablePriorityQueue<Vertex> pq(comp);
 
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-            pq.insert(vertex);
+            if (vertex->isActive()) pq.insert(vertex);
         }
         
         int maxColor = -1;
@@ -86,9 +82,8 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
 
             saturated->setColor(selectedColor);
 
-            for (Edge* edge : saturated->getAdj()) {
+            for (Edge* edge : saturated->getActiveAdj()) {
                 Vertex* neighbor = edge->getDest();
-
                 neighbor->getNeighborColors().insert(selectedColor);
                 pq.decreaseKey(neighbor); // update heap entry after updating the neighbor colors
             }

@@ -9,21 +9,27 @@
 #ifndef DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
 #define DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
 
-#include <vector>
+#include "Graph.h"
 
+#include <utility>
+#include <vector>
+#include <functional>
+
+
+typedef std::function<bool(const Vertex& , const Vertex&)> Comp;
 /**
- * class T must have: (i) accessible field int queueIndex; (ii) operator< defined.
+ * class T must have getter getQueueIndex and setter setQueueIndex
  */
 
-template <class T, class Compare>
+template <class T>
 class MutablePriorityQueue {
-    Compare comp; // comparison function to use with the priority queue's elements
+    Comp comp; // comparison function to use with the priority queue's elements
     std::vector<T *> H;
     void heapifyUp(unsigned i);
     void heapifyDown(unsigned i);
     inline void set(unsigned i, T * x);
 public:
-    MutablePriorityQueue();
+    MutablePriorityQueue(Comp comp);
     void insert(T * x);
     T * extractMin();
     void decreaseKey(T * x);
@@ -34,41 +40,42 @@ public:
 #define parent(i) ((i) / 2)
 #define leftChild(i) ((i) * 2)
 
-template <class T, class Compare>
-MutablePriorityQueue<T, Compare>::MutablePriorityQueue() {
+template <class T>
+MutablePriorityQueue<T>::MutablePriorityQueue(Comp comp) {
+    this->comp = std::move(comp);
     H.push_back(nullptr);
     // indices will be used starting in 1
     // to facilitate parent/child calculations
 }
 
-template <class T, class Compare>
-bool MutablePriorityQueue<T, Compare>::empty() {
+template <class T>
+bool MutablePriorityQueue<T>::empty() {
     return H.size() == 1;
 }
 
-template <class T, class Compare>
-T* MutablePriorityQueue<T, Compare>::extractMin() {
+template <class T>
+T* MutablePriorityQueue<T>::extractMin() {
     auto x = H[1];
     H[1] = H.back();
     H.pop_back();
     if(H.size() > 1) heapifyDown(1);
-    x->queueIndex = 0;
+    x->setQueueIndex(0);
     return x;
 }
 
-template <class T, class Compare>
-void MutablePriorityQueue<T, Compare>::insert(T *x) {
+template <class T>
+void MutablePriorityQueue<T>::insert(T *x) {
     H.push_back(x);
     heapifyUp(H.size()-1);
 }
 
-template <class T, class Compare>
-void MutablePriorityQueue<T, Compare>::decreaseKey(T *x) {
-    heapifyUp(x->queueIndex);
+template <class T>
+void MutablePriorityQueue<T>::decreaseKey(T *x) {
+    heapifyUp(x->getQueueIndex());
 }
 
-template <class T, class Compare>
-void MutablePriorityQueue<T, Compare>::heapifyUp(unsigned i) {
+template <class T>
+void MutablePriorityQueue<T>::heapifyUp(unsigned i) {
     auto x = H[i];
     while (i > 1 && comp(*x, *H[parent(i)])) {
         set(i, H[parent(i)]);
@@ -77,8 +84,8 @@ void MutablePriorityQueue<T, Compare>::heapifyUp(unsigned i) {
     set(i, x);
 }
 
-template <class T, class Compare>
-void MutablePriorityQueue<T, Compare>::heapifyDown(unsigned i) {
+template <class T>
+void MutablePriorityQueue<T>::heapifyDown(unsigned i) {
     auto x = H[i];
     while (true) {
         unsigned k = leftChild(i);
@@ -94,10 +101,10 @@ void MutablePriorityQueue<T, Compare>::heapifyDown(unsigned i) {
     set(i, x);
 }
 
-template <class T, class Compare>
-void MutablePriorityQueue<T, Compare>::set(unsigned i, T * x) {
+template <class T>
+void MutablePriorityQueue<T>::set(unsigned i, T * x) {
     H[i] = x;
-    x->queueIndex = i;
+    x->setQueueIndex(i);
 }
 
 #endif /* DA_TP_CLASSES_MUTABLEPRIORITYQUEUE */
