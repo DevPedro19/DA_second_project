@@ -96,7 +96,6 @@ void TxtParser::getAlgorithmVariant(ExecutionPlan &executionPlan, std::string &d
     int k = getInteger(kValue);
     rejectIfLessThan(k, "K", 1);
     std::cout << "Register count: " << executionPlan.registerCount << std::endl;
-    rejectIfGreaterThan(k, "K", executionPlan.registerCount);
     executionPlan.k = k;
     executionPlan.algorithmVariant = dataStr == "splitting" ? splitting : spilling;
 }
@@ -140,6 +139,8 @@ void TxtParser::rejectIfLessThan(int val, const std::string& name, int threshold
                                 ". Got: " + std::to_string(val));
 }
 
+
+// TODO: this function is not needed(?)
 void TxtParser::rejectIfGreaterThan(int val, const std::string& name, int threshold) {
     if (val > threshold)
         throw std::domain_error(name + " must be <= " + std::to_string(threshold) +

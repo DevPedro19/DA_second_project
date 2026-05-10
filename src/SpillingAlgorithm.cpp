@@ -14,6 +14,7 @@ bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
+// TODO: Describe the rationale you used in your algorithm implementation for the selection of which web(s) to spill
 int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int numColors) {
     MutablePriorityQueue<Vertex> pq(spillingComp);
     int regsUsed = 0;
