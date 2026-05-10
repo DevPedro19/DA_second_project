@@ -12,8 +12,6 @@ add_executable(DA_second_project
         include/TxtParser.h
         include/ExecutionPlan.h
         include/InfoMenu.h
-        include/GraphColoringStrategy.h
-        include/GraphColoringAlgorithm.h
         include/BasicAlgorithm.h
 
         data_structures/UFDS.h
@@ -28,9 +26,10 @@ add_executable(DA_second_project
         
         
         src/BasicAlgorithm.cpp
-        src/GraphColoringStrategy.cpp
         include/OutputWriter.h
         src/OutputWriter.cpp
         include/SpillingAlgorithm.h
         src/SpillingAlgorithm.cpp
+        include/AlgorithmAggregator.h
+        src/AlgorithmAggregator.cpp
 )

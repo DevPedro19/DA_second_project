@@ -95,6 +95,8 @@ public:
     void setOutputFromBatch(bool value);
 
 private:
+    static std::vector<Web> collectWebs(const std::map<std::string, std::vector<LiveRange>>& variableLiveRanges);
+
     /**
      * @brief Name of the input ranges file.
      */

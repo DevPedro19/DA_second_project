@@ -2,7 +2,7 @@
 #include "../data_structures/MutablePriorityQueue.h"
 #include "../data_structures/Graph.h"
 
-bool graphHasNoEdges(const Graph &interferenceGraph) {
+bool BasicAlgorithm::graphHasNoEdges(const Graph &interferenceGraph) {
     for (Vertex* vertex : interferenceGraph.getVertexSet()) {
         if (vertex->isActive() && !vertex->getActiveAdj().empty()) {
             return false;
@@ -13,7 +13,7 @@ bool graphHasNoEdges(const Graph &interferenceGraph) {
 }
 
 // Alternating colors 0 and 1
-bool dfsColoring(Vertex* vertex, int color) {
+bool BasicAlgorithm::dfsColoring(Vertex* vertex, int color) {
     vertex->setColor(color);
 
     for (const Edge* edge : vertex->getActiveAdj()) {
@@ -31,7 +31,7 @@ bool dfsColoring(Vertex* vertex, int color) {
     return true;
 }
 
-bool isGraphBipartite(const Graph &interferenceGraph) {
+bool BasicAlgorithm::isGraphBipartite(const Graph &interferenceGraph) {
     for (Vertex* vertex : interferenceGraph.getVertexSet()) {
         if (vertex->isActive() && vertex->getColor() == -1) { // not visited and active
             if (!dfsColoring(vertex, 0)) { // start with color 0
@@ -42,15 +42,15 @@ bool isGraphBipartite(const Graph &interferenceGraph) {
     return true;
 }
 
-bool comp(const Vertex& v1, const Vertex& v2) {
+bool BasicAlgorithm::DSaturComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getNeighborColors().size() == v2.getNeighborColors().size()) {
         return v1.getDegree() > v2.getDegree();
     }
     return v1.getNeighborColors().size() > v2.getNeighborColors().size();
 }
 
-bool DSatur(const Graph &interferenceGraph, int& numColors) {
-    MutablePriorityQueue<Vertex> pq(comp);
+bool BasicAlgorithm::DSatur(const Graph &interferenceGraph, int& numColors) {
+    MutablePriorityQueue<Vertex> pq(DSaturComp);
 
     for (Vertex* vertex : interferenceGraph.getVertexSet()) {
         if (vertex->isActive()) pq.insert(vertex);
@@ -84,8 +84,7 @@ bool DSatur(const Graph &interferenceGraph, int& numColors) {
     return true; // DSatur algorithm always finds the minimum number of colors needed to color the graph, independently of the numColors passed
 }
 
-
-bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
+bool BasicAlgorithm::runAlgorithm(const Graph &interferenceGraph, int& numColors) {
 
     if (numColors == 1) {
         return graphHasNoEdges(interferenceGraph);
@@ -99,4 +98,19 @@ bool BasicAlgorithm::execute(Graph &interferenceGraph, int& numColors) {
         return DSatur(interferenceGraph, numColors);
     }
     return false; // numColors cannot be < 1
+}
+
+int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) const {
+    interferenceGraph.resetColors();
+
+    // DSatur algorithm modifies the variable regsUsed, because it finds the minimum number of colors after just one run
+    for (int colorsUsed = 1; colorsUsed <= std::min(maxColors, 3); colorsUsed++) {
+        if (this->runAlgorithm(interferenceGraph, colorsUsed)) { // DSatur will always return true
+            if (colorsUsed <= maxColors) return colorsUsed;
+            return 0;
+        }
+        interferenceGraph.resetColors();
+    }
+
+    return 0; // should never happen
 }

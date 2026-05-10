@@ -3,15 +3,14 @@
 #include <vector>
 
 #include "CLI.h"
-#include "BasicAlgorithm.h"
-#include "GraphColoringStrategy.h"
+
+#include "AlgorithmAggregator.h"
 #include "InfoMenu.h"
 #include "OutputWriter.h"
-#include "SpillingAlgorithm.h"
 #include "TxtParser.h"
 #include "WebBuilder.h"
 #include "../data_structures/Graph.h"
-#include "../data_structures/MutablePriorityQueue.h"
+
 
 CLI::CLI() = default;
 
@@ -91,7 +90,7 @@ void CLI::writeOutput(const Graph& interferenceGraph, const int registersUsed, c
 
 std::string CLI::askRangeFilePath() {
     constexpr char sep = std::filesystem::path::preferred_separator;
-    std::cout << "Enter range file from ranges folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input/ranges" << sep << ")";
+    std::cout << "Enter range file from ranges folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input" << sep << "ranges" << sep << ")";
     std::string rangesFile;
     std::cin >> rangesFile;
     return rangesFile;
@@ -99,40 +98,15 @@ std::string CLI::askRangeFilePath() {
 
 std::string CLI::askRegisterFilePath() {
     constexpr char sep = std::filesystem::path::preferred_separator;
-    std::cout << "Enter register file from registers folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input/registers" << sep << ")";
+    std::cout << "Enter register file from registers folder (.txt):\n(" << std::filesystem::current_path().string() << sep << "input" << sep << "registers" << sep << ")";
     std::string registersFile;
     std::cin >> registersFile;
     return registersFile;
 }
 
-int tryBasicAlgorithm(Graph& interferenceGraph, int maxRegisters) {
-    BasicAlgorithm basicAlgorithm;
-    interferenceGraph.resetColors();
-
-    int regsUsed = 0;
-    // Execute the algorithm from 1 to registerCount registers, because the goal is to find the minimum number of registers needed
-    for (int regCount = 1; regCount <= maxRegisters; regCount++) {
-        if (basicAlgorithm.execute(interferenceGraph, regCount)) {
-            regsUsed = regCount;
-            break; // break the loop as soon the algorithm works
-        }
-        interferenceGraph.resetColors();
-    }
-
-    return regsUsed;
-}
-
-//  1. Higher degree
-//  2. Higher neighbor degree sum
-bool spillingComp(const Vertex& v1, const Vertex& v2) {
-    if (v1.getDegree() == v2.getDegree()) {
-        return v1.getNeighborDegreeSum() > v2.getNeighborDegreeSum(); // extends on the definition of "difficult-to-color vertex"
-    }
-    return v1.getDegree() > v2.getDegree();
-}
 
 // Collects webs of all variable
-std::vector<Web> collectWebs(const std::map<std::string, std::vector<LiveRange>>& variableLiveRanges) {
+std::vector<Web> CLI::collectWebs(const std::map<std::string, std::vector<LiveRange>>& variableLiveRanges) {
     std::vector<Web> webs;
     // Collect all webs of every variable
     for (const auto& [varName, liveRanges] : variableLiveRanges) {
@@ -154,36 +128,24 @@ void CLI::execute(const std::vector<std::string> &args) {
 
     InfoMenu infoMenu(variableLiveRanges, executionPlan);
     if (infoMenu.display()) { // if the Run Algorithm option was selected
+        AlgorithmAggregator algorithmAggregator;
+
         std::vector<Web> webs = collectWebs(variableLiveRanges);
         Graph interferenceGraph = Graph(webs);
-        int regsUsed = tryBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
+        int regsUsed = algorithmAggregator.runBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
 
-        if (regsUsed == 0) { // could not color
+        if (regsUsed == 0) { // could not color using the basic algorithm
 
             if (executionPlan.algorithmVariant == spilling) {
+                regsUsed = algorithmAggregator.runSpillingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
 
-                MutablePriorityQueue<Vertex> pq(spillingComp);
-
-                for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-                    if (vertex->isActive()) pq.insert(vertex);
-                }
-
-                for (int spilledRegs = 1; spilledRegs <= executionPlan.k; spilledRegs++) {
-                    Vertex* spilledReg = pq.extractMin(); // spill a register
-                    spilledReg->disable(); // disable the register node in the graph
-
-                    // update the priority queue
-                    for (Edge* edge : spilledReg->getActiveAdj()) {
-                        Vertex* neighbor = edge->getDest();
-                        pq.decreaseKey(neighbor);
-                    }
-
-                    regsUsed = tryBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
-                    if (regsUsed) break; // was possible with 'spilledRegs' spilled registers
-                }
+                /*
+            } else if (executionPlan.algorithmVariant == splitting) {
+                regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
+            }*/
             }
         }
-
+        
         //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit
         writeOutput(interferenceGraph, regsUsed, "output.txt");
     }
