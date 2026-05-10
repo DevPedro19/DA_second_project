@@ -4,14 +4,10 @@
 #ifndef DA_SECOND_PROJECT_GRAPH_H
 #define DA_SECOND_PROJECT_GRAPH_H
 
-#include <algorithm>
-
 #include "allocation.h"
 
-#include <iostream>
+#include <algorithm>
 #include <vector>
-
-#include "MutablePriorityQueue.h"
 
 class Edge;
 
@@ -23,10 +19,10 @@ class Edge;
 class Vertex {
 public:
     Vertex(Web in);
-    bool operator<(Vertex & vertex) const; // // required by MutablePriorityQueue
 
     Web getInfo() const;
     std::vector<Edge *> getAdj() const;
+    std::vector<Edge *> getActiveAdj() const;
     bool isVisited() const;
     bool isProcessing() const;
     unsigned int getDegree() const;
@@ -35,7 +31,7 @@ public:
     std::vector<Edge *> getIncoming() const;
 
     void setColor(int color);
-    void setNeighborColors(std::set<int> neighborColors);
+    void setQueueIndex(int index);
     void setInfo(Web info);
     void setVisited(bool visited);
     void setProcessing(bool processing);
@@ -43,26 +39,31 @@ public:
 
     int getColor() const;
     std::set<int> getNeighborColors() const;
+    int getNeighborDegreeSum() const; // adds complexity to the spilling algorithm
+    int getQueueIndex() const;
     int getLow() const;
     void setLow(int value);
     int getNum() const;
-    
 
     void setDist(double dist);
     void setPath(Edge *path);
     Edge * addEdge(Vertex *dest, double w);
     bool removeEdge(Web in);
     void removeOutgoingEdges();
-    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
+
+    void disable();
+    bool isActive() const;
 
 protected:
     Web info;                // info node
     int color;               // color of the node
+    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     std::vector<Edge *> adj;      // outgoing edges
     std::set<int> neighborColors; // the distinct colors of the vertex's neighbors
 
     // auxiliary fields
+    bool active = true;
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     int low = -1, num = -1; // used by SCC Tarjan
@@ -71,7 +72,6 @@ protected:
     Edge *path = nullptr;
 
     std::vector<Edge *> incoming; // incoming edges
-
 
     void deleteEdge(Edge *edge);
 };
@@ -140,12 +140,10 @@ public:
     bool addBidirectionalEdge(const Web &sourc, const Web &dest, double w);
 
     void resetColors();
-    std::set<int> getColors() const;
 
     int getNumVertex() const;
     std::vector<Vertex*> getVertexSet() const;
 
-    friend class MutablePriorityQueue<Vertex>;
 protected:
 
     double ** distMatrix = nullptr;   // dist matrix for Floyd-Warshall
@@ -222,15 +220,6 @@ inline void Vertex::removeOutgoingEdges() {
     }
 }
 
-
-inline bool Vertex::operator<(Vertex & vertex) const { // this implies heapifying up in the MutablePriorityQueue
-    if (this->neighborColors.size() == vertex.neighborColors.size()) {
-        return this->getDegree() > vertex.getDegree(); // in case of tie, "randomly" choose the lower one
-    }
-    return this->neighborColors.size() > vertex.neighborColors.size();
-}
-
-
 inline Web Vertex::getInfo() const {
     return this->info;
 }
@@ -259,12 +248,28 @@ inline int Vertex::getColor() const {
     return this->color;
 }
 
-inline void Vertex::setNeighborColors(std::set<int> neighborColors) {
-    this->neighborColors = neighborColors;
-}
-
 inline std::set<int> Vertex::getNeighborColors() const {
     return this->neighborColors;
+}
+
+inline int Vertex::getQueueIndex() const {
+    return this->queueIndex;
+}
+
+inline void Vertex::setQueueIndex(int index) {
+    this->queueIndex = index;
+}
+
+inline int Vertex::getNeighborDegreeSum() const {
+    int sum = 0;
+    for (const Edge* edge : adj) {
+        Vertex* neighbor = edge->getDest();
+
+        if (neighbor->active) {
+            sum += neighbor->getDegree();
+        }
+    }
+    return sum;
 }
 
 inline void Vertex::setNum(int value) {
@@ -276,6 +281,16 @@ inline std::vector<Edge*> Vertex::getAdj() const {
     return this->adj;
 }
 
+// Time complexity: O(degree of the vertex)
+inline std::vector<Edge*> Vertex::getActiveAdj() const {
+    std::vector<Edge*> activeAdj;
+    for (Edge* edge : adj) {
+        if (edge->getDest()->isActive()) {
+            activeAdj.push_back(edge);
+        }
+    }
+    return activeAdj;
+}
 
 inline bool Vertex::isVisited() const {
     return this->visited;
@@ -344,6 +359,14 @@ inline void Vertex::deleteEdge(Edge *edge) {
         }
     }
     delete edge;
+}
+
+inline void Vertex::disable() {
+    this->active = false;
+}
+
+inline bool Vertex::isActive() const {
+    return active;
 }
 
 /********************** Edge  ****************************/
@@ -445,7 +468,7 @@ inline std::vector<Vertex *> Graph::getVertexSet() const {
 
 inline Vertex * Graph::findVertex(const Web &in) const {
     for (auto v : vertexSet)
-        if (v->getInfo() == in)
+        if (v->isActive() && v->getInfo() == in)
             return v;
     return nullptr;
 }
@@ -559,17 +582,6 @@ inline void Graph::resetColors() {
         vertex->setColor(-1);
     }
 }
-
-inline std::set<int> Graph::getColors() const {
-    std::set<int> colors;
-    for (Vertex* vertex : vertexSet) {
-        if (vertex->getColor() != -1) {
-            colors.insert(vertex->getColor());
-        }
-    }
-    return colors;
-}
-
 
 inline Graph::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());

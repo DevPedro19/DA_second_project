@@ -9,20 +9,27 @@
 #ifndef DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
 #define DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
 
-#include <vector>
+#include "Graph.h"
 
+#include <utility>
+#include <vector>
+#include <functional>
+
+
+typedef std::function<bool(const Vertex& , const Vertex&)> Comp;
 /**
- * class T must have: (i) accessible field int queueIndex; (ii) operator< defined.
+ * class T must have getter getQueueIndex and setter setQueueIndex
  */
 
 template <class T>
 class MutablePriorityQueue {
+    Comp comp; // comparison function to use with the priority queue's elements
     std::vector<T *> H;
     void heapifyUp(unsigned i);
     void heapifyDown(unsigned i);
     inline void set(unsigned i, T * x);
 public:
-    MutablePriorityQueue();
+    MutablePriorityQueue(Comp comp);
     void insert(T * x);
     T * extractMin();
     void decreaseKey(T * x);
@@ -34,7 +41,8 @@ public:
 #define leftChild(i) ((i) * 2)
 
 template <class T>
-MutablePriorityQueue<T>::MutablePriorityQueue() {
+MutablePriorityQueue<T>::MutablePriorityQueue(Comp comp) {
+    this->comp = std::move(comp);
     H.push_back(nullptr);
     // indices will be used starting in 1
     // to facilitate parent/child calculations
@@ -51,7 +59,7 @@ T* MutablePriorityQueue<T>::extractMin() {
     H[1] = H.back();
     H.pop_back();
     if(H.size() > 1) heapifyDown(1);
-    x->queueIndex = 0;
+    x->setQueueIndex(0);
     return x;
 }
 
@@ -63,13 +71,13 @@ void MutablePriorityQueue<T>::insert(T *x) {
 
 template <class T>
 void MutablePriorityQueue<T>::decreaseKey(T *x) {
-    heapifyUp(x->queueIndex);
+    heapifyUp(x->getQueueIndex());
 }
 
 template <class T>
 void MutablePriorityQueue<T>::heapifyUp(unsigned i) {
     auto x = H[i];
-    while (i > 1 && *x < *H[parent(i)]) {
+    while (i > 1 && comp(*x, *H[parent(i)])) {
         set(i, H[parent(i)]);
         i = parent(i);
     }
@@ -83,9 +91,9 @@ void MutablePriorityQueue<T>::heapifyDown(unsigned i) {
         unsigned k = leftChild(i);
         if (k >= H.size())
             break;
-        if (k+1 < H.size() && *H[k+1] < *H[k])
+        if (k+1 < H.size() && comp(*H[k+1], *H[k]))
             ++k; // right child of i
-        if ( ! (*H[k] < *x) )
+        if ( ! comp(*H[k], *x) )
             break;
         set(i, H[k]);
         i = k;
@@ -96,7 +104,7 @@ void MutablePriorityQueue<T>::heapifyDown(unsigned i) {
 template <class T>
 void MutablePriorityQueue<T>::set(unsigned i, T * x) {
     H[i] = x;
-    x->queueIndex = i;
+    x->setQueueIndex(i);
 }
 
 #endif /* DA_TP_CLASSES_MUTABLEPRIORITYQUEUE */
