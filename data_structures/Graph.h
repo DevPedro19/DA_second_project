@@ -143,6 +143,7 @@ public:
 
     int getNumVertex() const;
     std::vector<Vertex*> getVertexSet() const;
+    std::vector<Web> getWebs() const;
 
 protected:
 
@@ -157,6 +158,10 @@ protected:
 private:
     std::vector<Vertex *> vertexSet;    // vertex set
 
+    /**
+     * @brief Original webs passed to the class constructor, from which the vertexSet is initialized and the edges are created based on their interference. This is attribute is useful for the splitting algorithm.
+     */
+    std::vector<Web> webs;
     /**
      * @brief Auxiliary function to create the edges between the vertices of the graph based on the interference of their corresponding webs. The algorithm used keeps an array of active webs, which are the ones that will interfere the current web in a given iteration through the vertexSet. The latter is initially sorted by the line number of the first line of the web.
      * @par Complexity
@@ -460,6 +465,10 @@ inline int Graph::getNumVertex() const {
 
 inline std::vector<Vertex *> Graph::getVertexSet() const {
     return vertexSet;
+}
+
+inline std::vector<Web> Graph::getWebs() const {
+    return webs;
 }
 
 /*

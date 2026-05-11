@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "CLI.h"
-
 #include "AlgorithmAggregator.h"
 #include "InfoMenu.h"
 #include "OutputWriter.h"
