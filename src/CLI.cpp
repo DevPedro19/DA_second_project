@@ -138,10 +138,8 @@ void CLI::execute(const std::vector<std::string> &args) {
             if (executionPlan.algorithmVariant == spilling) {
                 regsUsed = algorithmAggregator.runSpillingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
 
-                /*
             } else if (executionPlan.algorithmVariant == splitting) {
                 regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
-            }*/
             }
         }
         

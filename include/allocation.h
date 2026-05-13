@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <iostream>
+#include <climits>
 
 /**
  * @brief Represents the type of line in a live range, which can be either the first definition of a variable's value (firstDef), a read of that value that is not the last (read), or the last read of the value (lastRead). In the input files, '+' represents a line of type firstDef, '-' represents a line of type lastRead and any line that is not marked with '+' or '-' is of type read.
@@ -91,6 +92,32 @@ struct Web {
      */
     [[nodiscard]] int getLastLineNum() const {
         return liveWeb.rbegin()->lineNum;
+    }
+
+    [[nodiscard]] Line getFirstLine () const {
+        return *liveWeb.begin();
+    }
+
+    [[nodiscard]] Line getLastLine () const {
+        return *liveWeb.rbegin();
+    }
+
+
+    std::set<Line> setFirstLine(const Line xf) {
+        auto it = liveWeb.find(xf);
+        if (it == liveWeb.end() || it == --liveWeb.end()) return {};
+        ++it;
+        return {it, liveWeb.end()};
+    }
+
+    std::set<Line> setLastLine(const Line xi) {
+        auto it = liveWeb.find(xi);
+        if (it == liveWeb.begin() || it == liveWeb.end()) return {};
+        return {liveWeb.begin(), it};
+    }
+
+    [[nodiscard]] std::set<Line> getWeb() const {
+        return liveWeb;
     }
 };
 

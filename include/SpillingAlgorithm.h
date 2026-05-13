@@ -7,7 +7,7 @@
 class SpillingAlgorithm {
 public:
     explicit SpillingAlgorithm(const BasicAlgorithm& basicAlgorithm);
-    int execute(Graph &interferenceGraph, int maxRegsToSpill, int numColors);
+    int execute(Graph &interferenceGraph, int maxWebsToSpill, int numColors);
 
 private:
     static bool spillingComp(const Vertex& v1, const Vertex& v2);

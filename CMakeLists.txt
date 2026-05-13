@@ -32,4 +32,6 @@ add_executable(DA_second_project
         src/SpillingAlgorithm.cpp
         include/AlgorithmAggregator.h
         src/AlgorithmAggregator.cpp
+        include/SplittingAlgorithm.h
+        src/SplittingAlgorithm.cpp
 )
