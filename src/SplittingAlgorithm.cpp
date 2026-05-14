@@ -56,7 +56,7 @@ std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& 
 
         if (count > maxColors && xi.lineNum == -1) xi = point.first; // first line number where intersections exceed max colors
         // xi != -1  guarantees that a start existed before
-        if (count <= maxColors && xi.lineNum != -1) { // Most recent point where the intersections do not exceed max color
+        else if (count <= maxColors && xi.lineNum != -1) { // Most recent point where the intersections do not exceed max color
             xf = point.first;
             break;
         }
@@ -68,7 +68,7 @@ std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& 
 }
 
 
-std::pair<Web, Web> SplittingAlgorithm::splitWeb(const Web& webToSplit,const Line& xi,const Line& xf) {
+std::pair<Web, Web> SplittingAlgorithm::splitWeb(Web& webToSplit, const Line& xi, const Line& xf) {
     Web splitWeb1 = webToSplit;
     splitWeb1.setLastLine(xi); // The first part of the split web will end at the line before the intersection point
 
@@ -82,6 +82,7 @@ int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int max
     int colorsUsed = 0;
     std::vector<Web> websToSplit;
     int splitWebs;
+
     for (splitWebs = 1; splitWebs <= maxWebsToSplit; splitWebs++) {
         MutablePriorityQueue<Vertex> pq(splittingComp);
         std::vector<Web> webs = interferenceGraph.getWebs();
@@ -92,7 +93,12 @@ int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int max
         websToSplit.push_back(webToSplit);
         auto [xi, xf] = runIntersectionAlgorithm(interferenceGraph, webToSplit, numColors);
         auto [splitWeb1, splitWeb2] = splitWeb(webToSplit, xi, xf);
+
+        // Save the web that was split to output
+        Graph::addSplitWebsToMap(webToSplit,{{xi,xf},{splitWeb1, splitWeb2}});
+
         webs.erase(std::find(webs.begin(), webs.end(), webToSplit));
+        //TODO: PROBLEM HERE
         if (!splitWeb1.getWeb().empty()) webs.push_back(splitWeb1);
         if (!splitWeb2.getWeb().empty()) webs.push_back(splitWeb2);
 

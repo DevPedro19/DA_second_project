@@ -8,6 +8,8 @@
 
 #include <algorithm>
 #include <vector>
+#include <set>
+#include <map>
 
 class Edge;
 
@@ -39,6 +41,7 @@ public:
 
     int getColor() const;
     std::set<int> getNeighborColors() const;
+    void addColor(int color);
     int getNeighborDegreeSum() const; // adds complexity to the spilling algorithm
     int getQueueIndex() const;
     int getLow() const;
@@ -145,6 +148,14 @@ public:
     std::vector<Vertex*> getVertexSet() const;
     std::vector<Web> getWebs() const;
 
+    int getSpilledWebsNumber() const;
+
+    static std::map<Web, std::pair<std::pair<Line, Line>, std::pair<Web, Web>>> getSplitWebsMap();
+
+    static void addSplitWebsToMap(const Web& web, const std::pair<std::pair<Line, Line>, std::pair<Web, Web>>& splitWebs);
+
+    inline static std::map<Web, std::pair<std::pair<Line, Line>, std::pair<Web, Web>>> splitWebsMap;
+
 protected:
 
     double ** distMatrix = nullptr;   // dist matrix for Floyd-Warshall
@@ -163,8 +174,6 @@ private:
      */
     std::vector<Web> webs;
 
-    std::vector<Web> splittedWebs;
-
     /**
      * @brief Auxiliary function to create the edges between the vertices of the graph based on the interference of their corresponding webs. The algorithm used keeps an array of active webs, which are the ones that will interfere the current web in a given iteration through the vertexSet. The latter is initially sorted by the line number of the first line of the web.
      * @par Complexity
@@ -178,6 +187,10 @@ void deleteMatrix(double **m, int n);
 
 
 /************************* Vertex  **************************/
+
+inline void Vertex::addColor(int color) {
+    this->neighborColors.insert(color);
+}
 
 
 inline Vertex::Vertex(Web in): info(in) {}
@@ -429,6 +442,23 @@ inline void Edge::setFlow(double flow) {
 
 /********************** Graph  ****************************/
 
+
+inline int Graph::getSpilledWebsNumber() const {
+    int spilled = 0;
+    for (const Vertex* vertex : vertexSet) {
+        if (vertex->getColor() == -1) spilled++;
+    }
+    return spilled;
+}
+
+inline std::map<Web, std::pair<std::pair<Line, Line>, std::pair<Web, Web>>> Graph::getSplitWebsMap() {
+    return splitWebsMap;
+}
+
+inline void Graph::addSplitWebsToMap(const Web& web, const std::pair<std::pair<Line, Line>, std::pair<Web, Web>>& splitWebs) {
+    splitWebsMap[web] = splitWebs;
+}
+
 inline void Graph::createEdges() {
     // Create a vector of all webs, sorted by starting line number
     std::sort(vertexSet.begin(), vertexSet.end(), [] (const Vertex* v1, const Vertex* v2) {;
@@ -440,9 +470,13 @@ inline void Graph::createEdges() {
     for (const Vertex* vertex : vertexSet) {
         Web curWeb = vertex->getInfo();
 
-        while (!activeWebs.empty() && activeWebs.begin()->getLastLineNum() <= curWeb.getFirstLineNum()) {
-            // Remove webs that have ended, considering the beginning of the current web
-            activeWebs.erase(activeWebs.begin());
+        auto iter = activeWebs.begin();
+        while (iter != activeWebs.end()) {
+            if (curWeb.getFirstLineNum() >= iter->getLastLineNum()) {
+                iter = activeWebs.erase(iter);
+            } else {
+                ++iter;
+            }
         }
 
         // Iterate over activeWebs (which are the webs that are currently active in that line, meaning they will interfere)
@@ -454,6 +488,7 @@ inline void Graph::createEdges() {
 }
 
 inline Graph::Graph(const std::vector<Web>& webs) {
+    this->webs = webs;
     for (const Web& web : webs) {
         this->addVertex(web);
     }

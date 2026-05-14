@@ -12,6 +12,6 @@ int AlgorithmAggregator::runSpillingAlgorithm(Graph &interferenceGraph, int maxR
     return spillingAlgorithm.execute(interferenceGraph, maxRegsToSpill, numColors);
 }
 
-int AlgorithmAggregator::runSplittingAlgorithm(Graph &interferenceGraph, int numColors, int maxWebsToSplit) {
+int AlgorithmAggregator::runSplittingAlgorithm(Graph &interferenceGraph, int maxWebsToSplit, int numColors) {
     return splittingAlgorithm.execute(interferenceGraph, numColors, maxWebsToSplit);
 }

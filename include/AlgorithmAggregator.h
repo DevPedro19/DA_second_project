@@ -9,7 +9,7 @@ public:
     AlgorithmAggregator();
     int runBasicAlgorithm(Graph& interferenceGraph, int& numColors) const;
     int runSpillingAlgorithm(Graph &interferenceGraph, int maxRegsToSpill, int numColors);
-    int runSplittingAlgorithm(Graph &interferenceGraph, int numColors, int maxWebsToSplit);
+    int runSplittingAlgorithm(Graph &interferenceGraph, int maxWebsToSplit, int numColors);
 private:
     BasicAlgorithm basicAlgorithm;
     SpillingAlgorithm spillingAlgorithm;

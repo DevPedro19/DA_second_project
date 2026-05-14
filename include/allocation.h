@@ -49,7 +49,6 @@ inline bool operator==(const Line& l1, const Line& l2) {
  */
 typedef std::set<Line> LiveRange;
 
-
 /**
  * @brief Represents a web, which is the union of the live ranges of a variable, should they overlap at least in one line.
  */
@@ -103,17 +102,23 @@ struct Web {
     }
 
 
-    std::set<Line> setFirstLine(const Line xf) {
+    void setFirstLine(const Line& xf) {
         auto it = liveWeb.find(xf);
-        if (it == liveWeb.end() || it == --liveWeb.end()) return {};
-        ++it;
-        return {it, liveWeb.end()};
+        if (it == liveWeb.end() || it == std::prev(liveWeb.end())) {
+            this->liveWeb = {};
+        } else {
+            ++it;
+            this->liveWeb = {it, liveWeb.end()};
+        }
     }
 
-    std::set<Line> setLastLine(const Line xi) {
+    void setLastLine(const Line& xi) {
         auto it = liveWeb.find(xi);
-        if (it == liveWeb.begin() || it == liveWeb.end()) return {};
-        return {liveWeb.begin(), it};
+        if (it == liveWeb.begin() || it == liveWeb.end()) {
+            this->liveWeb = {};
+        } else {
+            this->liveWeb = {liveWeb.begin(), it};
+        }
     }
 
     [[nodiscard]] std::set<Line> getWeb() const {
