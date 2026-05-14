@@ -3,7 +3,13 @@
 
 #include "OutputWriter.h"
 
-OutputWriter::OutputWriter(std::string  outputFileName) : _outputFileName(std::move(outputFileName)) {}
+#include "ExecutionPlan.h"
+
+OutputWriter::OutputWriter(const std::string&  outputFileName) : _outputFileName("output/" + outputFileName) {
+    const std::string outputDirectoryName = "output";
+    // Create directory
+    std::filesystem::create_directory(outputDirectoryName);
+}
 
 void OutputWriter::writeWebs(std::ofstream& ofs, const Graph& interferenceGraph) {
     ofs << "webs: " << interferenceGraph.getVertexSet().size() << "\n";
@@ -32,8 +38,34 @@ void OutputWriter::writeRegisters(std::ofstream& ofs, const Graph& interferenceG
     }
 }
 
-void OutputWriter::writeOutput(const Graph& interferenceGraph, const int registersCount) const {
+void OutputWriter::writeSpilled(std::ofstream& ofs) {
+    std::set<int> memLines;
+
+    for (const auto& webSplit : Graph::getSplitWebsMap()) {
+        ofs << "web [" << webSplit.first.getFirstLineNum() << "," << webSplit.first.getLastLineNum() << "] ->";
+        if (!webSplit.second.second.first.getWeb().empty()) {
+            ofs << " ["<< webSplit.second.second.first.getFirstLineNum() << " " << webSplit.second.second.first.getLastLineNum() << "]";
+        }
+        if (!webSplit.second.second.second.getWeb().empty()) {
+            ofs << " ["<< webSplit.second.second.second.getFirstLineNum() << " " << webSplit.second.second.second.getLastLineNum() << "]";
+        }
+        ofs << " | mem [" << webSplit.second.first.first.lineNum << " " << webSplit.second.first.second.lineNum << "]";
+        ofs << "\n";
+    }
+}
+
+void OutputWriter::writeOutput(const Graph& interferenceGraph, const ExecutionPlan& executionPlan, const int registersCount) const {
     std::ofstream ofs(_outputFileName);
+    if (executionPlan.algorithmVariant == spilling) {
+        // TODO: Change this
+        ofs << "Spilling: " << interferenceGraph.getSpilledWebsNumber() << "\n";
+    }
+
+    if (executionPlan.algorithmVariant == splitting) {
+        ofs << "Split: " << Graph::getSplitWebsMap().size() << "\n";
+        writeSpilled(ofs);
+    }
+
     ofs << "# Total number of webs followed by the listing of the program points of each one\n";
     writeWebs(ofs, interferenceGraph);
     ofs << "# Total number of registers used, followed by assignment to webs\n";
