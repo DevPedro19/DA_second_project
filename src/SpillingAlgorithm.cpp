@@ -6,11 +6,11 @@ SpillingAlgorithm::SpillingAlgorithm(const BasicAlgorithm &basicAlgorithm) : bas
 
 // 1. Higher degree
 // 2. Higher neighbor degree sum
-// This criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
+// These criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
 bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getDegree() == v2.getDegree()) {
         if (v1.getNeighborDegreeSum() == v2.getNeighborDegreeSum()) {
-            // Promotes spilling of smaller webs, because the have less reads/writes associated
+            // Promotes spilling of smaller webs, because they have less reads/writes associated
             return (v1.getInfo().getLastLineNum() - v1.getInfo().getFirstLineNum()) <
             (v2.getInfo().getLastLineNum() - v2.getInfo().getFirstLineNum());
         }
@@ -19,8 +19,7 @@ bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
-// TODO: Describe the rationale you used in your algorithm implementation for the selection of which web(s) to spill
-int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int numColors) {
+int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxRegsToSpill, const int numColors) const {
     MutablePriorityQueue<Vertex> pq(spillingComp);
     int regsUsed = 0;
 
@@ -33,7 +32,7 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int
         spilledReg->disable(); // disable the register node in the graph
 
         // update the priority queue
-        for (Edge* edge : spilledReg->getActiveAdj()) {
+        for (const Edge* edge : spilledReg->getActiveAdj()) {
             Vertex* neighbor = edge->getDest();
             pq.decreaseKey(neighbor);
         }
