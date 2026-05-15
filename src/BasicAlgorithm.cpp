@@ -4,10 +4,12 @@
 
 bool BasicAlgorithm::graphHasNoEdges(const Graph &interferenceGraph) {
     for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-        if (vertex->isActive() && !vertex->getActiveAdj().empty()) {
-            return false;
+        if (vertex->isActive()) {
+            if (!vertex->getActiveAdj().empty()) {
+                return false;
+            }
+            vertex->setColor(0);
         }
-        vertex->setColor(0);
     }
     return true;
 }
@@ -110,6 +112,7 @@ int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) const
     for (int colorsUsed = 1; colorsUsed <= std::min(maxColors, 3); colorsUsed++) {
         if (this->runAlgorithm(interferenceGraph, colorsUsed)) { // DSatur will always return true
             if (colorsUsed <= maxColors) return colorsUsed;
+            interferenceGraph.resetColors();
             return 0;
         }
         interferenceGraph.resetColors();

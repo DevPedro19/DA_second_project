@@ -11,7 +11,7 @@
  */
 enum LineType {
     firstDef,
-    read,
+    active,
     lastRead,
 };
 
@@ -103,21 +103,44 @@ struct Web {
 
 
     void setFirstLine(const Line& xf) {
-        auto it = liveWeb.find(xf);
-        if (it == liveWeb.end() || it == std::prev(liveWeb.end())) {
+        if (xf == *liveWeb.rbegin()) {
             this->liveWeb = {};
         } else {
-            ++it;
-            this->liveWeb = {it, liveWeb.end()};
+            std::set<Line> newLiveWeb;
+            auto it = liveWeb.rbegin();
+            // Since we are leading with reverse iterators, the existing overload couldn't be used
+            while (it->lineNum > xf.lineNum) {
+                newLiveWeb.insert(*it);
+                ++it; // reverse iteration so we actually increase the iterator
+            }
+            if (*it == xf) {
+                newLiveWeb.insert(*it);
+            }
+            else {
+                newLiveWeb.insert({xf.lineNum, active});
+            }
+            newLiveWeb.insert(xf);
+            liveWeb = newLiveWeb;
         }
     }
 
     void setLastLine(const Line& xi) {
-        auto it = liveWeb.find(xi);
-        if (it == liveWeb.begin() || it == liveWeb.end()) {
+        if (xi == *liveWeb.begin()) {
             this->liveWeb = {};
         } else {
-            this->liveWeb = {liveWeb.begin(), it};
+            std::set<Line> newLiveWeb;
+            auto it = liveWeb.begin();
+            while (*it < xi) {
+                newLiveWeb.insert(*it);
+                ++it;
+            }
+            if (*it == xi) {
+                newLiveWeb.insert(*it);
+            }
+            else {
+                newLiveWeb.insert({xi.lineNum, active});
+            }
+            liveWeb = newLiveWeb;
         }
     }
 
@@ -125,17 +148,6 @@ struct Web {
         return liveWeb;
     }
 };
-
-
-/**
- * @brief Determines if a web is lower than another web, by comparing the sorted line numbers of their liveWeb sets. This operator is used to sort the webs by the line number of their first line, and in case of a tie, by the line number of their second line, and so on.
- * @param w1 The first web to compare.
- * @param w2 The second web to compare.
- * @return Returns true if w1 is lower than w2, and false otherwise.
- */
-inline bool operator<( const Web& w1, const Web& w2) {
-    return w1.liveWeb < w2.liveWeb;
-}
 
 /**
  * @brief Determines if two webs are equal by comparing both their variable names and their liveWeb sets.
@@ -145,6 +157,19 @@ inline bool operator<( const Web& w1, const Web& w2) {
  */
 inline bool operator==( const Web& w1, const Web& w2) {
     return w1.varName == w2.varName && w1.liveWeb == w2.liveWeb;
+}
+
+/**
+ * @brief Determines if a web is lower than another web, by comparing the sorted line numbers of their liveWeb sets. This operator is used to sort the webs by the line number of their first line, and in case of a tie, by the line number of their second line, and so on.
+ * @param w1 The first web to compare.
+ * @param w2 The second web to compare.
+ * @return Returns true if w1 is lower than w2, and false otherwise.
+ */
+inline bool operator<( const Web& w1, const Web& w2) {
+    if (w1.liveWeb == w2.liveWeb) {
+        return w1.varName < w2.varName;
+    }
+    return w1.liveWeb < w2.liveWeb;
 }
 
 #endif //DA_SECOND_PROJECT_ALLOCATION_H

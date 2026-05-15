@@ -49,17 +49,17 @@ std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& 
 
 
     std::sort(breakPoints.begin(), breakPoints.end(), aux);
-    int count = 0;
-    Line xi = {-1, read}, xf = {-1, read};
+    int count = 0; int prev = 0;
+    Line xi = {-1, active}, xf = {-1, active};
     for (auto point : breakPoints) {
         count += point.second; // one more or one less active web
 
         if (count > maxColors && xi.lineNum == -1) xi = point.first; // first line number where intersections exceed max colors
         // xi != -1  guarantees that a start existed before
-        else if (count <= maxColors && xi.lineNum != -1) { // Most recent point where the intersections do not exceed max color
+        else if (count <= maxColors && prev > maxColors  && xi.lineNum != -1) { // Most recent point where the intersections do not exceed max color
             xf = point.first;
-            break;
         }
+        prev = count;
     }
 
     xi = std::max(xi, webToSplit.getFirstLine());
@@ -98,11 +98,10 @@ int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int max
         Graph::addSplitWebsToMap(webToSplit,{{xi,xf},{splitWeb1, splitWeb2}});
 
         webs.erase(std::find(webs.begin(), webs.end(), webToSplit));
-        //TODO: PROBLEM HERE
         if (!splitWeb1.getWeb().empty()) webs.push_back(splitWeb1);
         if (!splitWeb2.getWeb().empty()) webs.push_back(splitWeb2);
 
-        interferenceGraph = Graph(webs); // Generate new graph with updated webs
+        interferenceGraph = Graph(webs);
         if ((colorsUsed = this->basicAlgorithm.execute(interferenceGraph, numColors))) {
             break;
         }

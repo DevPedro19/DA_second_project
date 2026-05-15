@@ -9,6 +9,11 @@ SpillingAlgorithm::SpillingAlgorithm(const BasicAlgorithm &basicAlgorithm) : bas
 // This criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
 bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getDegree() == v2.getDegree()) {
+        if (v1.getNeighborDegreeSum() == v2.getNeighborDegreeSum()) {
+            // Promotes spilling of smaller webs, because the have less reads/writes associated
+            return (v1.getInfo().getLastLineNum() - v1.getInfo().getFirstLineNum()) <
+            (v2.getInfo().getLastLineNum() - v2.getInfo().getFirstLineNum());
+        }
         return v1.getNeighborDegreeSum() > v2.getNeighborDegreeSum(); // extends on the definition of "difficult-to-color vertex"
     }
     return v1.getDegree() > v2.getDegree();

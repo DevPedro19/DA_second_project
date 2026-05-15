@@ -110,7 +110,7 @@ Line TxtParser::parseLine(const std::string& lineAsStr ) {
         linePoint.type = lastRead;
     }
     else {
-        linePoint.type = read;
+        linePoint.type = active;
         substring = lineAsStr; // for read lines, the entire string is the line number since there is no + or - at the end
     }
     linePoint.lineNum = getInteger(substring);

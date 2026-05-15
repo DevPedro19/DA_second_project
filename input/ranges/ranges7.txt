@@ -1,0 +1,4 @@
+# 3-clique: all variables alive at lines 1-5, requires exactly 3 registers
+a: 1+,2,3,4,5-
+b: 1+,2,3,4,5-
+c: 1+,2,3,4,5-

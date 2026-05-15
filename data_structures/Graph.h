@@ -384,6 +384,7 @@ inline void Vertex::deleteEdge(Edge *edge) {
 
 inline void Vertex::disable() {
     this->active = false;
+    this->color = -1;
 }
 
 inline bool Vertex::isActive() const {
@@ -446,7 +447,7 @@ inline void Edge::setFlow(double flow) {
 inline int Graph::getSpilledWebsNumber() const {
     int spilled = 0;
     for (const Vertex* vertex : vertexSet) {
-        if (vertex->getColor() == -1) spilled++;
+        if (!vertex->isActive() && vertex->getColor() == -1) spilled++;
     }
     return spilled;
 }
@@ -475,13 +476,9 @@ inline void Graph::createEdges() {
             if (curWeb.getFirstLineNum() >= iter->getLastLineNum()) {
                 iter = activeWebs.erase(iter);
             } else {
+                this->addBidirectionalEdge(curWeb, *iter, 1);
                 ++iter;
             }
-        }
-
-        // Iterate over activeWebs (which are the webs that are currently active in that line, meaning they will interfere)
-        for (const Web& activeWeb : activeWebs) {
-            this->addBidirectionalEdge(curWeb, activeWeb, 1);
         }
         activeWebs.insert(curWeb); // Add the current web to the active set, as its lines are now active
     }

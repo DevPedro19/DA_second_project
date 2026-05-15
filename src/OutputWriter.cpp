@@ -3,6 +3,8 @@
 
 #include "OutputWriter.h"
 
+#include <filesystem>
+
 #include "ExecutionPlan.h"
 
 OutputWriter::OutputWriter(const std::string&  outputFileName) : _outputFileName("output/" + outputFileName) {
@@ -18,7 +20,7 @@ void OutputWriter::writeWebs(std::ofstream& ofs, const Graph& interferenceGraph)
         ofs << "web" << count++ << ": ";
         for (const auto line: web->getInfo().liveWeb) {
             ofs << "" << line.lineNum
-                    << (line.type == firstDef ? "+" : (line.type == read ? "" : "-")) << " ";
+                    << (line.type == firstDef ? "+" : (line.type == active ? "" : "-")) << " ";
         }
         ofs << "\n";
     }
@@ -42,14 +44,14 @@ void OutputWriter::writeSpilled(std::ofstream& ofs) {
     std::set<int> memLines;
 
     for (const auto& webSplit : Graph::getSplitWebsMap()) {
-        ofs << "web [" << webSplit.first.getFirstLineNum() << "," << webSplit.first.getLastLineNum() << "] ->";
+        ofs << "web " << webSplit.first.varName << " [" << webSplit.first.getFirstLineNum() << "," << webSplit.first.getLastLineNum() << "] ->";
         if (!webSplit.second.second.first.getWeb().empty()) {
             ofs << " ["<< webSplit.second.second.first.getFirstLineNum() << " " << webSplit.second.second.first.getLastLineNum() << "]";
         }
         if (!webSplit.second.second.second.getWeb().empty()) {
             ofs << " ["<< webSplit.second.second.second.getFirstLineNum() << " " << webSplit.second.second.second.getLastLineNum() << "]";
         }
-        ofs << " | mem [" << webSplit.second.first.first.lineNum << " " << webSplit.second.first.second.lineNum << "]";
+        ofs << " | mem ]" << webSplit.second.first.first.lineNum << " " << webSplit.second.first.second.lineNum << "[";
         ofs << "\n";
     }
 }
@@ -57,7 +59,6 @@ void OutputWriter::writeSpilled(std::ofstream& ofs) {
 void OutputWriter::writeOutput(const Graph& interferenceGraph, const ExecutionPlan& executionPlan, const int registersCount) const {
     std::ofstream ofs(_outputFileName);
     if (executionPlan.algorithmVariant == spilling) {
-        // TODO: Change this
         ofs << "Spilling: " << interferenceGraph.getSpilledWebsNumber() << "\n";
     }
 
