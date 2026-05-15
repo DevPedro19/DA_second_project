@@ -6,13 +6,13 @@
 
 class SpillingAlgorithm {
 public:
-    explicit SpillingAlgorithm(const BasicAlgorithm& basicAlgorithm);
+    explicit SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm);
     int execute(Graph &interferenceGraph, int maxWebsToSpill, int numColors);
 
 private:
     static bool spillingComp(const Vertex& v1, const Vertex& v2);
 
-    BasicAlgorithm basicAlgorithm;
+    ColoringAlgorithm* coloring_algorithm;
 };
 
 #endif //DA_SECOND_PROJECT_SPILLINGALGORITHM_H

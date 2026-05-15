@@ -13,6 +13,7 @@ add_executable(DA_second_project
         include/ExecutionPlan.h
         include/InfoMenu.h
         include/BasicAlgorithm.h
+        include/HybridAlgorithm.h
 
         data_structures/UFDS.h
         data_structures/Graph.h
@@ -34,4 +35,6 @@ add_executable(DA_second_project
         src/AlgorithmAggregator.cpp
         include/SplittingAlgorithm.h
         src/SplittingAlgorithm.cpp
+        src/HybridAlgorithm.cpp
+        include/ColoringAlgorithm.h
 )
