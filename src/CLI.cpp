@@ -143,8 +143,6 @@ void CLI::execute(const std::vector<std::string> &args) {
                 regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
             }
         }
-
-
         writeOutput(interferenceGraph, executionPlan, regsUsed, "output.txt");
     }
 }

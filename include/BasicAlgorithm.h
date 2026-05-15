@@ -1,20 +1,13 @@
 #ifndef DA_SECOND_PROJECT_BASICALGORITHM_H
 #define DA_SECOND_PROJECT_BASICALGORITHM_H
 
-#include "../data_structures/Graph.h"
+#include "ColoringAlgorithm.h"
 
-class BasicAlgorithm {
+class BasicAlgorithm : public ColoringAlgorithm {
 public:
-    int execute(Graph &interferenceGraph, int maxColors) const;
-
+    int execute(Graph &interferenceGraph, int maxColors) override;
 private:
-    static bool graphHasNoEdges(const Graph &interferenceGraph);
-    static bool isGraphBipartite(const Graph &interferenceGraph);
-    static bool dfsColoring(Vertex* vertex, int color);
-    static bool DSaturComp(const Vertex& v1, const Vertex& v2);
-    static bool DSatur(const Graph &interferenceGraph, int& numColors);
-
-    static bool runAlgorithm(const Graph &interferenceGraph, int& numColors);
+    static bool runAlgorithm(Graph &interferenceGraph, int& numColors);
 };
 
 #endif //DA_SECOND_PROJECT_BASICALGORITHM_H

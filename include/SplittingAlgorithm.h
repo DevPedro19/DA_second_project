@@ -5,10 +5,12 @@
 #ifndef DA_SECOND_PROJECT_SPLITTINGALGORITHM_H
 #define DA_SECOND_PROJECT_SPLITTINGALGORITHM_H
 #include "BasicAlgorithm.h"
+#include "HybridAlgorithm.h"
 
 class SplittingAlgorithm {
 public:
-    SplittingAlgorithm(const BasicAlgorithm& basicAlgorithm);
+    SplittingAlgorithm(ColoringAlgorithm* coloring_algorithm);
+
     int execute(Graph &interferenceGraph, int numColors, int maxWebsToSplit);
 
 private:
@@ -16,7 +18,7 @@ private:
     static std::pair<Line, Line> runIntersectionAlgorithm(const Graph& interferenceGraph, const Web& webToSplit, int maxColors);
     static std::pair<Web, Web> splitWeb( Web& webToSplit, const Line& xi, const Line& xf);
 
-    BasicAlgorithm basicAlgorithm;
+    ColoringAlgorithm* coloring_algorithm;
 };
 
 

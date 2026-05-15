@@ -2,7 +2,7 @@
 
 #include "../data_structures/MutablePriorityQueue.h"
 
-SpillingAlgorithm::SpillingAlgorithm(const BasicAlgorithm &basicAlgorithm) : basicAlgorithm(basicAlgorithm) {}
+SpillingAlgorithm::SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm) : coloring_algorithm(coloring_algorithm) {}
 
 // 1. Higher degree
 // 2. Higher neighbor degree sum
@@ -19,7 +19,6 @@ bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
-// TODO: Describe the rationale you used in your algorithm implementation for the selection of which web(s) to spill
 int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int numColors) {
     MutablePriorityQueue<Vertex> pq(spillingComp);
     int regsUsed = 0;
@@ -38,7 +37,7 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int
             pq.decreaseKey(neighbor);
         }
 
-        regsUsed = this->basicAlgorithm.execute(interferenceGraph, numColors);
+        regsUsed = coloring_algorithm->execute(interferenceGraph, numColors);
         if (regsUsed) break; // was possible with 'spilledRegs' spilled registers
     }
 
