@@ -3,8 +3,8 @@
 #include <vector>
 
 #include "CLI.h"
-
 #include "AlgorithmAggregator.h"
+#include "ExecutionPlan.h"
 #include "InfoMenu.h"
 #include "OutputWriter.h"
 #include "TxtParser.h"
@@ -80,12 +80,12 @@ void CLI::readInput(const std::string& rangesFile, const std::string& registersF
     parser.parseFiles(variableLiveRanges, executionPlan);
 }
 
-void CLI::writeOutput(const Graph& interferenceGraph, const int registersUsed, const std::string& outputFileName) {
+void CLI::writeOutput(const Graph& interferenceGraph, const ExecutionPlan& executionPlan, const int registersUsed, const std::string& outputFileName) {
     if (!_outputFromBatch) {
         setOutputFileName(outputFileName);
     }
     const OutputWriter outputWriter(outputFileName);
-    outputWriter.writeOutput(interferenceGraph, registersUsed);
+    outputWriter.writeOutput(interferenceGraph, executionPlan, registersUsed);
 }
 
 std::string CLI::askRangeFilePath() {
@@ -139,14 +139,12 @@ void CLI::execute(const std::vector<std::string> &args) {
             if (executionPlan.algorithmVariant == spilling) {
                 regsUsed = algorithmAggregator.runSpillingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
 
-                /*
             } else if (executionPlan.algorithmVariant == splitting) {
                 regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
-            }*/
             }
         }
-        
-        //TODO: output.txt is the current default output file. Also it is going to cmake-build, need to change CMAKElsit
-        writeOutput(interferenceGraph, regsUsed, "output.txt");
+
+
+        writeOutput(interferenceGraph, executionPlan, regsUsed, "output.txt");
     }
 }

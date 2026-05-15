@@ -57,7 +57,8 @@ public:
     static void readInput(const std::string& rangesFile, const std::string& registersFile, std::map<std::string, std::vector<LiveRange>>&
                           variableLiveRanges, ExecutionPlan& executionPlan);
 
-    void writeOutput(const Graph& interferenceGraph, const int registersUsed, const std::string& outputFileName);
+
+    void writeOutput(const Graph& interferenceGraph, const ExecutionPlan& executionPlan, int registersUsed, const std::string& outputFileName);
     /**
      * @brief Processes the command line arguments and determines if the execution is in batch or interactive modes and behaves accordingly to check the validity of the input file's extension and set the input and output file paths.
      * @param args Command line arguments passed to the program when executed.

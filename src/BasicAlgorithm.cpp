@@ -4,10 +4,12 @@
 
 bool BasicAlgorithm::graphHasNoEdges(const Graph &interferenceGraph) {
     for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-        if (vertex->isActive() && !vertex->getActiveAdj().empty()) {
-            return false;
+        if (vertex->isActive()) {
+            if (!vertex->getActiveAdj().empty()) {
+                return false;
+            }
+            vertex->setColor(0);
         }
-        vertex->setColor(0);
     }
     return true;
 }
@@ -63,8 +65,9 @@ bool BasicAlgorithm::DSatur(const Graph &interferenceGraph, int& numColors) {
         std::set<int> neighborColors = saturated->getNeighborColors();
 
         // find the minimum not used color
-        int selectedColor;
-        for (selectedColor = 0; selectedColor < *neighborColors.rbegin(); selectedColor++) {
+        int selectedColor = 0;
+        int maxNeighborColor = neighborColors.empty() ? -1 : *neighborColors.rbegin(); // max color used by the neighbors, or -1 if no neighbor has a color
+        for (selectedColor = 0; selectedColor <= maxNeighborColor; selectedColor++) {
 
             if (neighborColors.find(selectedColor) == neighborColors.end()) break; // if this color is not used
         } // if all colors are used from 0 to the maxColor, use a new color
@@ -75,8 +78,10 @@ bool BasicAlgorithm::DSatur(const Graph &interferenceGraph, int& numColors) {
 
         for (Edge* edge : saturated->getActiveAdj()) {
             Vertex* neighbor = edge->getDest();
-            neighbor->getNeighborColors().insert(selectedColor);
-            pq.decreaseKey(neighbor); // update heap entry after updating the neighbor colors
+            if (neighbor->getColor() == -1) {
+                neighbor->addColor(selectedColor);
+                pq.decreaseKey(neighbor); // update heap entry after updating the neighbor colors
+            }
         }
     }
 
@@ -107,6 +112,7 @@ int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) const
     for (int colorsUsed = 1; colorsUsed <= std::min(maxColors, 3); colorsUsed++) {
         if (this->runAlgorithm(interferenceGraph, colorsUsed)) { // DSatur will always return true
             if (colorsUsed <= maxColors) return colorsUsed;
+            interferenceGraph.resetColors();
             return 0;
         }
         interferenceGraph.resetColors();

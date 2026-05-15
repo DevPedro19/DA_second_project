@@ -31,9 +31,9 @@ std::map<int, LiveRange> WebBuilder::getMergedLiveRanges(UFDS& ufds, const unsig
         for (Line line : this->liveRanges[i]) {
             // 'it' is an iterator for the inserted line / or for the already existing value (if not inserted) and 'inserted' is a boolean indicating if the line was inserted or not
             const auto [it, inserted] = indexToLiveRange[root].insert(line); // associate this line to the parent live range
-            if (!inserted && it->type != read) {
+            if (!inserted && it->type != active) {
                 Line updated = *it; // copy of the iterator's value
-                updated.type = read; // set its type to read / enforce read (nor '-' neither '+', because all possible combinations lead to the connection line having no '-' nor '+')
+                updated.type = active; // set its type to read / enforce read (nor '-' neither '+', because all possible combinations lead to the connection line having no '-' nor '+')
                 indexToLiveRange[root].erase(it); // erase the old line (with the old type)
                 indexToLiveRange[root].insert(updated); // insert the updated line (with type read)
             }

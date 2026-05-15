@@ -28,7 +28,7 @@ void InfoMenu::displayLiveRanges() const {
             std::cout << "   Live Range: ";
             for (const auto& line : liveRange) {
                 std::cout << "" << line.lineNum
-                          << (line.type == firstDef ? "+" : (line.type == read ? "" : "-")) << " ";
+                          << (line.type == firstDef ? "+" : (line.type == active ? "" : "-")) << " ";
             }
             std::cout << std::endl;
         }
