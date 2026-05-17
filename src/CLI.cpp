@@ -131,18 +131,20 @@ void CLI::execute(const std::vector<std::string> &args) {
 
         std::vector<Web> webs = collectWebs(variableLiveRanges);
         Graph interferenceGraph = Graph(webs);
-        int regsUsed = algorithmAggregator.runBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
 
-        if (regsUsed == 0) { // could not color using the basic algorithm
+        int regsUsed;
 
-            if (executionPlan.algorithmVariant == spilling) {
-                regsUsed = algorithmAggregator.runSpillingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
+        if (executionPlan.algorithmVariant == freeAlgo) {
+            regsUsed = algorithmAggregator.runFreeAlgorithm(interferenceGraph, executionPlan.registerCount, executionPlan.k);
+        } else {
+            regsUsed = algorithmAggregator.runBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
+            if (regsUsed == 0) { // could not color using the basic algorithm
+                if (executionPlan.algorithmVariant == spilling) {
+                    regsUsed = algorithmAggregator.runSpillingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
 
-            } else if (executionPlan.algorithmVariant == splitting) {
-                regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
-
-            } else if (executionPlan.algorithmVariant == freeAlgo) {
-                regsUsed = algorithmAggregator.runFreeAlgorithm(interferenceGraph, executionPlan.registerCount, executionPlan.k);
+                } else if (executionPlan.algorithmVariant == splitting) {
+                    regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
+                }
             }
         }
         writeOutput(interferenceGraph, executionPlan, regsUsed, "output.txt");

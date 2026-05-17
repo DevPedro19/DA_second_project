@@ -123,8 +123,10 @@ Line TxtParser::parseLine(const std::string& lineAsStr ) {
 }
 
 void TxtParser::removeTrailingSequence(std::string &str, const std::string &s) {
-    const size_t start = str.find_first_not_of(s);
-    const size_t end = str.find_last_not_of(s);
+    // Add carriage return, newline, and tabs to whatever characters we are stripping
+    std::string charsToRemove = s + "\r\n\t";
+    const size_t start = str.find_first_not_of(charsToRemove);
+    const size_t end = str.find_last_not_of(charsToRemove);
     if (start == std::string::npos || end == std::string::npos) {
         str = "";
     } else {

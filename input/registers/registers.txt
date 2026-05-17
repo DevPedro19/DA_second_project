@@ -1,0 +1,7 @@
+# comment line
+registers: 2
+# registers: 3
+# algorithm: basic
+# algorithm: spilling, 1
+ algorithm: splitting, 1
+# algorithm: freeAlgo, 1
