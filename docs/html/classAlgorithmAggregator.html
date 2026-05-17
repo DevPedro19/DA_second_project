@@ -112,6 +112,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ab66324b6e6f24ab19ba0b00db82da76d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the basic graph coloring algorithm on the given interference graph.  <br /></td></tr>
 <tr class="separator:ab66324b6e6f24ab19ba0b00db82da76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6385938d1ceab49863feaae0b30113b0" id="r_a6385938d1ceab49863feaae0b30113b0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAlgorithmAggregator.html#a6385938d1ceab49863feaae0b30113b0">runHybridAlgorithm</a> (<a class="el" href="classGraph.html">Graph</a> &amp;interferenceGraph, int &amp;numColors)</td></tr>
+<tr class="memdesc:a6385938d1ceab49863feaae0b30113b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the hybrid graph coloring algorithm on the given interference graph. This algorithm combines multiple approaches to achieve better complexity.  <br /></td></tr>
 <tr class="separator:a6385938d1ceab49863feaae0b30113b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87efd4c9594bfc99926d1136d36510f0" id="r_a87efd4c9594bfc99926d1136d36510f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAlgorithmAggregator.html#a87efd4c9594bfc99926d1136d36510f0">runSpillingAlgorithm</a> (<a class="el" href="classGraph.html">Graph</a> &amp;interferenceGraph, int maxRegsToSpill, int numColors)</td></tr>
 <tr class="memdesc:a87efd4c9594bfc99926d1136d36510f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the spilling algorithm on the given interference graph. This algorithm attempts to spill up to <code>maxRegsToSpill</code> registers in order to reduce the number of colors needed to color the graph.  <br /></td></tr>
@@ -270,6 +271,16 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Runs the hybrid graph coloring algorithm on the given interference graph. This algorithm combines multiple approaches to achieve better complexity. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interferenceGraph</td><td>The interference graph to be colored. </td></tr>
+    <tr><td class="paramname">numColors</td><td>The number of available registers (colors). This parameter here is passed by reference because the hybrid algorithm may modify it if it runs the DSatur algorithm, which finds the minimum colors needed to color the graph. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of registers (colors) used to color the graph, if the value is 0 it means it couldn't color it. </dd></dl>
 
 </div>
 </div>
