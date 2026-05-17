@@ -8,7 +8,9 @@
 
 /**
  * @brief Class that aggregates all algorithms, acting as a unified wrapper for register allocation strategies on an interference graph.
- * @details his class provides a single entry point for executing the three register allocation algorithms: basic, spilling and splitting. Each algorithm attempts to color the interference graph with at most `numColor`. If the graph cannot be colored, the spilling and splitting algorithms will apply heuristics to reduce the number of registers needed.
+ * @details this class provides a single entry point for executing the three register allocation algorithms: basic, spilling, splitting and free.
+ * Each algorithm attempts to color the interference graph with at most `numColor`.
+ * If the graph cannot be colored, the spilling and splitting (and free) algorithms will apply heuristics to reduce the number of registers needed.
  */
 class AlgorithmAggregator {
 public:

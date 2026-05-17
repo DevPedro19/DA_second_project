@@ -30,6 +30,10 @@ public:
      * @param numColors The maximum number of colors (registers) the graph can be colored.
      * @param maxWebsToSplit The maximum number of webs (vertices) that can be split.
      * @return The number of registers the graph can be colored. If 0 it means the graph still cannot be colored.
+     * @par Complexity:
+     * Time: O(s * ColoringAlgorithmComplexity), where s is the number of webs split (up to `maxWebsToSplit`) and
+     * ColoringAlgorithmComplexity is the complexity of the coloring algorithm used to check if the graph
+     * can be colored after each split.
      */
     int execute(Graph &interferenceGraph, int numColors, int maxWebsToSplit) const;
 
@@ -43,6 +47,8 @@ private:
      * @param v1 First vertex.
      * @param v2 Second vertex.
      * @return True if v1 should be split before v2, false otherwise.
+     * @par Complexity:
+     * Time: O(E), where E is the number of edges in the graph.
      */
     static bool splittingComp(const Vertex& v1, const Vertex& v2);
 
@@ -57,6 +63,8 @@ private:
      * @param webToSplit The instance of the web to be split.
      * @param maxColors The maximum number of colors (registers). This variable is used to find the xi and xf. Once the number of active webs surpasses `maxColors` with will initialize xi and once it goes back to `maxColors` or less it will update xf until the end of the break points.
      * @return The lines were the `webToSplit` should be split.
+     * @par Complexity:
+     * Time: O(VlogV), where V is the number of vertices in the graph.
      */
     static std::pair<Line, Line> runIntersectionAlgorithm(const Graph& interferenceGraph, const Web& webToSplit, int maxColors);
 
@@ -66,6 +74,8 @@ private:
      * @param xi First line were it should be split.
      * @param xf Last line were it should be split.
      * @return A pair of the two new Webs created from the resulting split.
+     * @par Complexity:
+     * Time: O(LlogL), where L is the number of lines in the web to split
      */
     static std::pair<Web, Web> splitWeb(const Web& webToSplit, const Line& xi, const Line& xf);
 
