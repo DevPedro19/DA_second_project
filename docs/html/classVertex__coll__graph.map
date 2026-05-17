@@ -1,0 +1,21 @@
+<map id="Vertex" name="Vertex">
+<area shape="rect" id="Node000001" title="This class represents the vertices of the graph, which consists of a web." alt="" coords="161,284,225,309"/>
+<area shape="rect" id="Node000008" href="$classEdge.html" title="This class represents the Edges fo the graph, which consists of the origin vertex,..." alt="" coords="89,389,143,414"/>
+<area shape="poly" id="edge8_Node000008_Node000001" title=" " alt="" coords="178,322,127,390,123,387,174,319"/>
+<area shape="rect" id="Node000002" href="$structWeb.html" title="Represents a web, which is the union of the live ranges of a variable, should they overlap at least i..." alt="" coords="115,196,165,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,232,188,282,184,285,152,235"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="31,108,118,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="88,144,103,170,127,194,123,198,99,174,83,147"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="77,59,77,108,72,108,72,59"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="142,108,269,133"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="190,146,151,197,147,194,186,143"/>
+<area shape="rect" id="Node000006" href="$structLine.html" title="Represents a line in a live range, which is defined by its line number and its type (firstDef,..." alt="" coords="181,13,230,38"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="208,52,208,108,203,108,203,52"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="111,479,275,504"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="220,468,231,453,237,436,238,422,231,387,216,344,198,311,203,308,221,342,236,386,243,421,242,437,236,456,225,471"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="137,422,185,477,181,480,133,426"/>
+<area shape="poly" id="edge9_Node000008_Node000008" title=" " alt="" coords="158,391,166,394,170,402,161,411,144,412,143,407,159,406,165,401,163,398,156,396"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="189,196,307,221"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="236,234,203,285,199,282,231,231"/>
+</map>

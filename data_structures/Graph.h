@@ -176,7 +176,7 @@ protected:
 /********************** Edge  ****************************/
 
 /**
- * @brief This class repsents the Edges fo the graph, which consists of the origin vertex, origin vertex and the weight of the edge.
+ * @brief This class represents the Edges fo the graph, which consists of the origin vertex, origin vertex and the weight of the edge.
  */
 class Edge {
 public:
@@ -329,8 +329,17 @@ public:
      */
     static void addSplitWebsToMap(const Web& web, const std::pair<std::pair<Line, Line>, std::pair<Web, Web>>& splitWebs);
 
+    /**
+     * @brief Function that returns the vector of active vertices in the graph.
+     * @return The vector of active vertices in the graph.
+     */
+
     [[nodiscard]] std::vector<Vertex *> getActiveVertexSet() const;
 
+    /**
+     * @brief Function that sets the vertexSet of the graph to a given vector of vertices. This function is used in the splitting algorithm to update the vertexSet of the graph after splitting a web and rebuilding the graph with the new webs.
+     * @param newVertexSet The new vector of vertices to be set as the vertexSet of the graph.
+     */
     void setVertexSet(const std::vector<Vertex*>& newVertexSet);
 private:
     /**
