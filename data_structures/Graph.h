@@ -88,7 +88,7 @@ public:
      * @brief Function that adds a given color to the set of neighbor colors.
      * @param newColor Color to add to the set.
      */
-    void addColor(int newColor);
+    void addNeighborColor(int newColor);
 
     /**
      * @brief Function that sums the degree of the neighbors of the vertex that are active.
@@ -123,6 +123,7 @@ public:
      */
     void disable();
 
+    void setActive();
     /**
      * @brief Function to see if the vertex is active, which means it was not spilled and is still in the graph.
      * @return Returns true if the vertex is active, and false if it is not active (spilled).
@@ -232,6 +233,8 @@ public:
      */
     explicit Graph(const std::vector<Web>& webs);
 
+    void rebuildGraph(const std::vector<Web>& w);
+
     /**
      * @brief Destructor for Graph class.
      */
@@ -326,6 +329,9 @@ public:
      */
     static void addSplitWebsToMap(const Web& web, const std::pair<std::pair<Line, Line>, std::pair<Web, Web>>& splitWebs);
 
+    [[nodiscard]] std::vector<Vertex *> getActiveVertexSet() const;
+
+    void setVertexSet(const std::vector<Vertex*>& newVertexSet);
 private:
     /**
      * @brief A vector that has all the vertices of the graph.
@@ -417,7 +423,7 @@ inline int Vertex::getNeighborDegreeSum() const {
     return sum;
 }
 
-inline void Vertex::addColor(const int newColor) {
+inline void Vertex::addNeighborColor(const int newColor) {
     this->neighborColors.insert(newColor);
 }
 
@@ -458,6 +464,10 @@ inline void Vertex::disable() {
     this->color = -1;
 }
 
+inline void Vertex::setActive() {
+    this->active = true;
+}
+
 inline bool Vertex::isActive() const {
     return active;
 }
@@ -481,6 +491,23 @@ inline void Edge::setReverse(Edge *reverseEdge) {
 
 /********************** Graph  ****************************/
 
+inline void Graph::rebuildGraph(const std::vector<Web> &w) {
+    for (const auto v: vertexSet) v->removeOutgoingEdges();
+    for (auto v: vertexSet) delete v;
+    vertexSet.clear();
+
+    this->webs = w;
+    for (const Web& web : w) {
+        this->addVertex(web);
+    }
+    createEdges();
+}
+
+
+inline void Graph::setVertexSet(const std::vector<Vertex*>& newVertexSet) {
+    this->vertexSet = newVertexSet;
+}
+
 
 inline int Graph::getSpilledWebsNumber() const {
     int spilled = 0;
@@ -496,6 +523,16 @@ inline std::map<Web, std::pair<std::pair<Line, Line>, std::pair<Web, Web>>> Grap
 
 inline void Graph::addSplitWebsToMap(const Web& web, const std::pair<std::pair<Line, Line>, std::pair<Web, Web>>& splitWebs) {
     splitWebsMap[web] = splitWebs;
+}
+
+inline std::vector<Vertex *> Graph::getActiveVertexSet() const {
+    std::vector<Vertex*> activeVertices;
+    for (Vertex* vertex : vertexSet) {
+        if (vertex->isActive()) {
+            activeVertices.push_back(vertex);
+        }
+    }
+    return activeVertices;
 }
 
 inline void Graph::createEdges() {
@@ -514,8 +551,7 @@ inline void Graph::createEdges() {
             if (curWeb.getFirstLineNum() >= iter->getLastLineNum()) {
                 iter = activeWebs.erase(iter);
             } else {
-                this->addBidirectionalEdge(curWeb, *iter);
-                ++iter;
+                if (this->addBidirectionalEdge(curWeb, *iter)) ++iter;
             }
         }
         activeWebs.insert(curWeb);

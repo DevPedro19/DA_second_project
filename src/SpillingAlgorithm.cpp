@@ -2,7 +2,7 @@
 
 #include "../data_structures/MutablePriorityQueue.h"
 
-SpillingAlgorithm::SpillingAlgorithm(const BasicAlgorithm &basicAlgorithm) : basicAlgorithm(basicAlgorithm) {}
+SpillingAlgorithm::SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm) : coloring_algorithm(coloring_algorithm) {}
 
 // 1. Higher degree
 // 2. Higher neighbor degree sum
@@ -19,7 +19,7 @@ bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
-int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxRegsToSpill, const int numColors) const {
+int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxWebsToSpill, const int numColors) const {
     MutablePriorityQueue<Vertex> pq(spillingComp);
     int regsUsed = 0;
 
@@ -27,7 +27,7 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxRegsToSpil
         if (vertex->isActive()) pq.insert(vertex);
     }
 
-    for (int spilledRegs = 1; spilledRegs <= maxRegsToSpill; spilledRegs++) {
+    for (int spilledRegs = 1; spilledRegs <= maxWebsToSpill; spilledRegs++) {
         Vertex* spilledReg = pq.extractMin(); // spill a register
         spilledReg->disable(); // disable the register node in the graph
 
@@ -37,7 +37,7 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxRegsToSpil
             pq.decreaseKey(neighbor);
         }
 
-        regsUsed = this->basicAlgorithm.execute(interferenceGraph, numColors);
+        regsUsed = coloring_algorithm->execute(interferenceGraph, numColors);
         if (regsUsed) break; // was possible with 'spilledRegs' spilled registers
     }
 

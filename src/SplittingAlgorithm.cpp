@@ -1,10 +1,10 @@
 #include "SplittingAlgorithm.h"
 #include <algorithm>
 
+#include "HybridAlgorithm.h"
 #include "../data_structures/MutablePriorityQueue.h"
 
-SplittingAlgorithm::SplittingAlgorithm(const BasicAlgorithm &basicAlgorithm) : basicAlgorithm(basicAlgorithm) {}
-
+SplittingAlgorithm::SplittingAlgorithm(ColoringAlgorithm* coloring_algorithm) : coloring_algorithm(coloring_algorithm) {}
 // 1. Higher degree
 // 2. Higher neighbor degree sum
 // This criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
@@ -97,8 +97,8 @@ int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int max
         if (!splitWeb1.getWeb().empty()) webs.push_back(splitWeb1);
         if (!splitWeb2.getWeb().empty()) webs.push_back(splitWeb2);
 
-        interferenceGraph = Graph(webs);
-        if ((colorsUsed = this->basicAlgorithm.execute(interferenceGraph, numColors))) {
+        interferenceGraph.rebuildGraph(webs); // rebuild the graph with the new webs
+        if ((colorsUsed = coloring_algorithm->execute(interferenceGraph, numColors))) {
             break;
         }
     }

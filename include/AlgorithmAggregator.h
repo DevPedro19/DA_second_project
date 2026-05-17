@@ -2,6 +2,7 @@
 #define DA_SECOND_PROJECT_ALGORITHMAGGREGATOR_H
 
 #include "BasicAlgorithm.h"
+#include "HybridAlgorithm.h"
 #include "SpillingAlgorithm.h"
 #include "SplittingAlgorithm.h"
 
@@ -22,7 +23,7 @@ public:
      * @param numColors The number of available registers (colors). This parameter here is passed by reference because the basic algorithm may modify it if it runs the DSatur algorithm, which finds the minimum colors needed to color the graph.
      * @return The number of registers (colors) used to color the graph, if the value is 0 it means it couldn't color it.
      */
-    int runBasicAlgorithm(Graph& interferenceGraph, int& numColors) const;
+    int runBasicAlgorithm(Graph& interferenceGraph, int& numColors);
 
     /**
      * @brief Runs the spilling algorithm on the given interference graph. This algorithm attempts to spill up to `maxRegsToSpill` registers in order to reduce the number of colors needed to color the graph.
@@ -42,11 +43,14 @@ public:
      */
     int runSplittingAlgorithm(Graph &interferenceGraph, int maxWebsToSplit, int numColors);
 
+    int runFreeAlgorithm(Graph &interferenceGraph, int numColors, int maxWebsToSplit);
+
 private:
     /**
      * @brief Instance of the basic coloring algorithm.
      */
     BasicAlgorithm basicAlgorithm;
+    HybridAlgorithm hybridAlgorithm;
 
     /**
      * @brief Instance of the spilling algorithm.
@@ -57,6 +61,7 @@ private:
      * @brief Instance of the splitting algorithm.
      */
     SplittingAlgorithm splittingAlgorithm;
+    SplittingAlgorithm freeAlgorithm;
 };
 
 #endif //DA_SECOND_PROJECT_ALGORITHMAGGREGATOR_H

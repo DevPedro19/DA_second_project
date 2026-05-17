@@ -12,9 +12,9 @@ class SpillingAlgorithm {
 public:
     /**
      * @brief Constructs the Spilling algorithm using a `basicAlgorithm` instance.
-     * @param basicAlgorithm The basic algorithm instance. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
+     * @param coloring_algorithm The coloring algorithm instancee. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
      */
-    explicit SpillingAlgorithm(const BasicAlgorithm& basicAlgorithm);
+    explicit SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm);
 
     /**
      * @brief The main spilling algorithm.
@@ -31,7 +31,7 @@ public:
      * @param numColors The maximum number of colors (registers) the graph can be colored.
      * @return The number of registers the graph can be colored. If 0 it means the graph still cannot be colored.
      */
-    int execute(Graph &interferenceGraph, int maxWebsToSpill, int numColors) const;
+    int execute(Graph& interferenceGraph, int maxWebsToSpill, int numColors) const;
 
 private:
     /**
@@ -47,9 +47,9 @@ private:
     static bool spillingComp(const Vertex& v1, const Vertex& v2);
 
     /**
-     * @brief Instance of the basic algorithm.
+     * @brief Instance of the coloring algorithm.
      */
-    BasicAlgorithm basicAlgorithm;
+    ColoringAlgorithm* coloring_algorithm;
 };
 
 #endif //DA_SECOND_PROJECT_SPILLINGALGORITHM_H

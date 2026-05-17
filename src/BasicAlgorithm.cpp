@@ -1,116 +1,59 @@
 #include "BasicAlgorithm.h"
-#include "../data_structures/MutablePriorityQueue.h"
-#include "../data_structures/Graph.h"
 
-bool BasicAlgorithm::graphHasNoEdges(const Graph &interferenceGraph) {
-    for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-        if (vertex->isActive()) {
-            if (!vertex->getActiveAdj().empty()) {
-                return false;
-            }
-            vertex->setColor(0);
-        }
-    }
-    return true;
-}
+#include <stack>
 
-// Alternating colors 0 and 1
-bool BasicAlgorithm::dfsColoring(Vertex* vertex, int color) {
-    vertex->setColor(color);
+bool BasicAlgorithm::runAlgorithm(Graph &interferenceGraph, int &numColors) {
+    std::stack<Vertex* > s;
 
-    for (const Edge* edge : vertex->getActiveAdj()) {
-        Vertex* neighbor = edge->getDest();
-
-        if (neighbor->getColor() == -1) { // not visited
-            if (!dfsColoring(neighbor, 1 - color)) {
-                return false;
-            }
-
-        } else if (neighbor->getColor() == color) { // cannot be bipartite graph, as two adjacent vertices have the same color
-            return false;
-        }
-    }
-    return true;
-}
-
-bool BasicAlgorithm::isGraphBipartite(const Graph &interferenceGraph) {
-    for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-        if (vertex->isActive() && vertex->getColor() == -1) { // not visited and active
-            if (!dfsColoring(vertex, 0)) { // start with color 0
-                return false;
+    while (!interferenceGraph.getActiveVertexSet().empty()) {
+        bool removedVertex = false;
+        for (Vertex* vertex : interferenceGraph.getActiveVertexSet()) {
+            // Only consider degree of active
+            if (vertex->getActiveAdj().size() < numColors) {
+                s.push(vertex);
+                vertex->disable();
+                removedVertex = true;
             }
         }
-    }
-    return true;
-}
-
-bool BasicAlgorithm::DSaturComp(const Vertex& v1, const Vertex& v2) {
-    if (v1.getNeighborColors().size() == v2.getNeighborColors().size()) {
-        return v1.getDegree() > v2.getDegree();
-    }
-    return v1.getNeighborColors().size() > v2.getNeighborColors().size();
-}
-
-bool BasicAlgorithm::DSatur(const Graph &interferenceGraph, int& numColors) {
-    MutablePriorityQueue<Vertex> pq(DSaturComp);
-
-    for (Vertex* vertex : interferenceGraph.getVertexSet()) {
-        if (vertex->isActive()) pq.insert(vertex);
+        if (!removedVertex) {
+            return false; // no vertex with degree < numColors, so coloring is not possible
+        }
     }
 
     int maxColor = -1;
-    while (!pq.empty()) {
-        Vertex* saturated = pq.extractMin();
+    while (!s.empty()) {
+        Vertex* vertex = s.top();
+        s.pop();
+        vertex->setActive();
 
-        std::set<int> neighborColors = saturated->getNeighborColors();
+        std::set<int> neighborColors = vertex->getNeighborColors();
 
         // find the minimum not used color
         int selectedColor = 0;
         int maxNeighborColor = neighborColors.empty() ? -1 : *neighborColors.rbegin(); // max color used by the neighbors, or -1 if no neighbor has a color
         for (selectedColor = 0; selectedColor <= maxNeighborColor; selectedColor++) {
-
             if (neighborColors.find(selectedColor) == neighborColors.end()) break; // if this color is not used
         } // if all colors are used from 0 to the maxColor, use a new color
 
-        if (selectedColor > maxColor) maxColor = selectedColor; // update maxColor
+        if (selectedColor > maxColor) maxColor = selectedColor; // update numColors
 
-        saturated->setColor(selectedColor);
+        vertex->setColor(selectedColor);
 
-        for (Edge* edge : saturated->getActiveAdj()) {
+        for (Edge* edge : vertex->getAdj()) {
             Vertex* neighbor = edge->getDest();
-            if (neighbor->getColor() == -1) {
-                neighbor->addColor(selectedColor);
-                pq.decreaseKey(neighbor); // update heap entry after updating the neighbor colors
-            }
+            neighbor->addNeighborColor(selectedColor);
         }
     }
-
-    numColors = maxColor + 1; // maxColor is 0-based
-    return true; // DSatur algorithm always finds the minimum number of colors needed to color the graph, independently of the numColors passed
+    numColors = maxColor + 1; // numColors is the number of colors used, which is maxColor + 1 since colors start from 0
+    return true;
 }
 
-bool BasicAlgorithm::runAlgorithm(const Graph &interferenceGraph, int& numColors) {
-
-    if (numColors == 1) {
-        return graphHasNoEdges(interferenceGraph);
-    }
-
-    if (numColors == 2) {
-        return isGraphBipartite(interferenceGraph);
-    }
-
-    if (numColors >= 3) {
-        return DSatur(interferenceGraph, numColors);
-    }
-    return false; // numColors cannot be < 1
-}
-
-int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) const {
+int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) {
     interferenceGraph.resetColors();
 
-    // DSatur algorithm modifies the variable regsUsed, because it finds the minimum number of colors after just one run
+    // Basic algorithm modifies the variable regsUsed
     for (int colorsUsed = 1; colorsUsed <= std::min(maxColors, 3); colorsUsed++) {
-        if (this->runAlgorithm(interferenceGraph, colorsUsed)) { // DSatur will always return true
+        if (runAlgorithm(interferenceGraph, colorsUsed)) {
             if (colorsUsed <= maxColors) return colorsUsed;
             interferenceGraph.resetColors();
             return 0;

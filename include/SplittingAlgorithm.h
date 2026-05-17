@@ -2,6 +2,7 @@
 #define DA_SECOND_PROJECT_SPLITTINGALGORITHM_H
 
 #include "BasicAlgorithm.h"
+#include "HybridAlgorithm.h"
 
 /**
  * @brief Class that represents the Splitting algorithm.
@@ -11,9 +12,9 @@ class SplittingAlgorithm {
 public:
     /**
      * @brief Constructs the Splitting algorithm using a `basicAlgorithm` instance.
-     * @param basicAlgorithm The basic algorithm instance. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
+     * @param coloring_algorithm The coloring algorithm instance. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
      */
-    SplittingAlgorithm(const BasicAlgorithm& basicAlgorithm);
+    SplittingAlgorithm(ColoringAlgorithm* coloring_algorithm);
 
     /**
      * @brief The main splitting algorithm.
@@ -69,9 +70,9 @@ private:
     static std::pair<Web, Web> splitWeb(const Web& webToSplit, const Line& xi, const Line& xf);
 
     /**
-     * @brief Instance of the basic algorithm.
+     * @brief Instance of the coloring algorithm.
      */
-    BasicAlgorithm basicAlgorithm;
+    ColoringAlgorithm* coloring_algorithm;
 };
 
 
