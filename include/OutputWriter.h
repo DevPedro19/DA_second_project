@@ -32,7 +32,7 @@ private:
      */
     static void writeWebs(std::ofstream& ofs, const Graph& interferenceGraph);
 
-    static void writeSpilled(std::ofstream& ofs);
+    static void writeSplit(std::ofstream& ofs);
 
     /**
      * @biref

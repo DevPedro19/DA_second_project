@@ -44,6 +44,9 @@ bool HybridAlgorithm::isGraphBipartite(const Graph &interferenceGraph) {
 
 bool HybridAlgorithm::DSaturComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getNeighborColors().size() == v2.getNeighborColors().size()) {
+        if (v1.getDegree() == v2.getDegree()) {
+            return v1.getNeighborDegreeSum() > v2.getNeighborDegreeSum();
+        }
         return v1.getDegree() > v2.getDegree();
     }
     return v1.getNeighborColors().size() > v2.getNeighborColors().size();

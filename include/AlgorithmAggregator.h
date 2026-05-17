@@ -8,7 +8,9 @@
 
 /**
  * @brief Class that aggregates all algorithms, acting as a unified wrapper for register allocation strategies on an interference graph.
- * @details his class provides a single entry point for executing the three register allocation algorithms: basic, spilling and splitting. Each algorithm attempts to color the interference graph with at most `numColor`. If the graph cannot be colored, the spilling and splitting algorithms will apply heuristics to reduce the number of registers needed.
+ * @details this class provides a single entry point for executing the three register allocation algorithms: basic, spilling, splitting and free.
+ * Each algorithm attempts to color the interference graph with at most `numColor`.
+ * If the graph cannot be colored, the spilling and splitting (and free) algorithms will apply heuristics to reduce the number of registers needed.
  */
 class AlgorithmAggregator {
 public:
@@ -43,12 +45,16 @@ public:
      */
     int runSplittingAlgorithm(Graph &interferenceGraph, int maxWebsToSplit, int numColors);
 
+    /**
+     * @brief Runs a splitting algorithm that internally uses the hybrid algorithm for coloring, on the given interference graph
+     * @param interferenceGraph The graph representing variable interferences
+     * @param numColors The number of available registers (colors)
+     * @param maxWebsToSplit The maximum number of live ranges (webs) that can be split
+     * @return The number of colors used after allocation
+     */
     int runFreeAlgorithm(Graph &interferenceGraph, int numColors, int maxWebsToSplit);
 
 private:
-    /**
-     * @brief Instance of the basic coloring algorithm.
-     */
     BasicAlgorithm basicAlgorithm;
     HybridAlgorithm hybridAlgorithm;
 

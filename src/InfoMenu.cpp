@@ -39,7 +39,15 @@ void InfoMenu::displayExecutionPlan() const {
     std::cout << "\n=== Execution Plan ===" << std::endl;
 
     std::cout << "  Register Count: " << executionPlan.registerCount << std::endl;
-    std::cout << "  Algorithm Variant: " << (executionPlan.algorithmVariant == basic ? "basic" : (executionPlan.algorithmVariant == splitting ? "splitting" : "spilling")) << std::endl;
+    std::string algoName;
+    switch (executionPlan.algorithmVariant) {
+        case basic:     algoName = "basic"; break;
+        case splitting: algoName = "splitting"; break;
+        case spilling:  algoName = "spilling"; break;
+        case freeAlgo:  algoName = "freeAlgo"; break;
+        default:        algoName = "unknown"; break;
+    }
+    std::cout << "  Algorithm Variant: " << algoName << std::endl;
     if (executionPlan.algorithmVariant != basic) std::cout << "K: " << executionPlan.k << std::endl;
 }
 

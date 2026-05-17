@@ -1,10 +1,9 @@
 #include "AlgorithmAggregator.h"
 
-// Basic Algorithm is initialized with default constructor
 AlgorithmAggregator::AlgorithmAggregator()
-    : spillingAlgorithm(&basicAlgorithm),
-      splittingAlgorithm(&basicAlgorithm),
-      freeAlgorithm(&hybridAlgorithm) {}
+    : spillingAlgorithm(&basicAlgorithm), // The spilling algorithm uses the basic algorithm for coloring
+      splittingAlgorithm(&basicAlgorithm), // The splitting algorithm uses the basic algorithm for coloring
+      freeAlgorithm(&hybridAlgorithm) {} // The free algorithm uses the hybrid algorithm for coloring
 
 int AlgorithmAggregator::runBasicAlgorithm(Graph& interferenceGraph, int& numColors){
     return basicAlgorithm.execute(interferenceGraph, numColors);

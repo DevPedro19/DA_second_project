@@ -40,18 +40,20 @@ void OutputWriter::writeRegisters(std::ofstream& ofs, const Graph& interferenceG
     }
 }
 
-void OutputWriter::writeSpilled(std::ofstream& ofs) {
+void OutputWriter::writeSplit(std::ofstream& ofs) {
     std::set<int> memLines;
 
     for (const auto& webSplit : Graph::getSplitWebsMap()) {
-        ofs << "web " << webSplit.first.varName << " [" << webSplit.first.getFirstLineNum() << "," << webSplit.first.getLastLineNum() << "] ->";
+        ofs << "web " << webSplit.first.varName << " [" << webSplit.first.getFirstLineNum() << "," << webSplit.first.getLastLineNum() << "[ ->";
         if (!webSplit.second.second.first.getWeb().empty()) {
-            ofs << " ["<< webSplit.second.second.first.getFirstLineNum() << " " << webSplit.second.second.first.getLastLineNum() << "]";
+            ofs << " ["<< webSplit.second.second.first.getFirstLineNum()
+            << " " << webSplit.second.second.first.getLastLineNum() << "[";
         }
         if (!webSplit.second.second.second.getWeb().empty()) {
-            ofs << " ["<< webSplit.second.second.second.getFirstLineNum() << " " << webSplit.second.second.second.getLastLineNum() << "]";
+            ofs << " ["<< webSplit.second.second.second.getFirstLineNum()
+            << " " << webSplit.second.second.second.getLastLineNum() << "[";
         }
-        ofs << " | mem ]" << webSplit.second.first.first.lineNum << " " << webSplit.second.first.second.lineNum << "[";
+        ofs << " | mem [" << webSplit.second.first.first.lineNum << " " << webSplit.second.first.second.lineNum << "[";
         ofs << "\n";
     }
 }
@@ -62,9 +64,9 @@ void OutputWriter::writeOutput(const Graph& interferenceGraph, const ExecutionPl
         ofs << "Spilling: " << interferenceGraph.getSpilledWebsNumber() << "\n";
     }
 
-    if (executionPlan.algorithmVariant == splitting) {
+    if (executionPlan.algorithmVariant == splitting || executionPlan.algorithmVariant == freeAlgo) {
         ofs << "Split: " << Graph::getSplitWebsMap().size() << "\n";
-        writeSpilled(ofs);
+        writeSplit(ofs);
     }
 
     ofs << "# Total number of webs followed by the listing of the program points of each one\n";

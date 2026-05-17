@@ -12,7 +12,7 @@ class SpillingAlgorithm {
 public:
     /**
      * @brief Constructs the Spilling algorithm using a `basicAlgorithm` instance.
-     * @param coloring_algorithm The coloring algorithm instancee. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
+     * @param coloring_algorithm The coloring algorithm instance. It is used to see if the splitting was effective in reducing the number of colors needed to color the graph, it tests if the spilled graph is colorable with `numColors` colors.
      */
     explicit SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm);
 
@@ -30,6 +30,10 @@ public:
      * @param maxWebsToSpill The maximum number of vertices (webs) that can be disabled (spilled).
      * @param numColors The maximum number of colors (registers) the graph can be colored.
      * @return The number of registers the graph can be colored. If 0 it means the graph still cannot be colored.
+     * @par Complexity:
+     * Time: O(s * ColoringAlgorithmComplexity) where s is the number of vertices spilled until a valid coloring is
+     * found (or until `maxWebsToSpill` is reached) and ColoringAlgorithmComplexity is the complexity of the coloring
+     * algorithm used.
      */
     int execute(Graph& interferenceGraph, int maxWebsToSpill, int numColors) const;
 
@@ -43,6 +47,8 @@ private:
      * @param v1 First vertex.
      * @param v2 Second vertex.
      * @return True if v1 should be spilled before v2, false otherwise.
+     * @par Complexity:
+     * Time: O(E), where E is the number of edges in the graph.
      */
     static bool spillingComp(const Vertex& v1, const Vertex& v2);
 

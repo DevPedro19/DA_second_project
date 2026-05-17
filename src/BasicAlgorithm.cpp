@@ -3,32 +3,41 @@
 #include <stack>
 
 bool BasicAlgorithm::runAlgorithm(Graph &interferenceGraph, int &numColors) {
-    std::stack<Vertex* > s;
-
+    std::stack<Vertex*> s;
+    std::vector<Vertex*> disabledVertices;
+    // Loop runs until all vertices are removed
     while (!interferenceGraph.getActiveVertexSet().empty()) {
-        bool removedVertex = false;
+        bool removedVertex = false; // boolean flag to check whether at least one vertex was removed in this iteration
         for (Vertex* vertex : interferenceGraph.getActiveVertexSet()) {
             // Only consider degree of active
             if (vertex->getActiveAdj().size() < numColors) {
                 s.push(vertex);
                 vertex->disable();
+                disabledVertices.push_back(vertex);
                 removedVertex = true;
             }
         }
+        // If no vertex was removed in this iteration, it means that all remaining vertices have degree >= numColors,
+        // so coloring is not possible, returning false
         if (!removedVertex) {
-            return false; // no vertex with degree < numColors, so coloring is not possible
+            for (auto vertex : disabledVertices) {
+                vertex->setActive();
+            }
+            return false;
         }
     }
 
     int maxColor = -1;
     while (!s.empty()) {
+        // Get the last vertex added to the stack
         Vertex* vertex = s.top();
         s.pop();
         vertex->setActive();
 
+        // Get the colors used by the neighbors of the vertex
         std::set<int> neighborColors = vertex->getNeighborColors();
 
-        // find the minimum not used color
+        // Find the minimum not used color
         int selectedColor = 0;
         int maxNeighborColor = neighborColors.empty() ? -1 : *neighborColors.rbegin(); // max color used by the neighbors, or -1 if no neighbor has a color
         for (selectedColor = 0; selectedColor <= maxNeighborColor; selectedColor++) {
@@ -37,8 +46,8 @@ bool BasicAlgorithm::runAlgorithm(Graph &interferenceGraph, int &numColors) {
 
         if (selectedColor > maxColor) maxColor = selectedColor; // update numColors
 
+        // Set the color of the vertex and update the neighbor colors
         vertex->setColor(selectedColor);
-
         for (Edge* edge : vertex->getAdj()) {
             Vertex* neighbor = edge->getDest();
             neighbor->addNeighborColor(selectedColor);
@@ -52,7 +61,7 @@ int BasicAlgorithm::execute(Graph &interferenceGraph, const int maxColors) {
     interferenceGraph.resetColors();
 
     // Basic algorithm modifies the variable regsUsed
-    for (int colorsUsed = 1; colorsUsed <= std::min(maxColors, 3); colorsUsed++) {
+    for (int colorsUsed = 1; colorsUsed <= maxColors; colorsUsed++) {
         if (runAlgorithm(interferenceGraph, colorsUsed)) {
             if (colorsUsed <= maxColors) return colorsUsed;
             interferenceGraph.resetColors();

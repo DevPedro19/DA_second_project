@@ -78,7 +78,7 @@ void TxtParser::getRegisterCount(ExecutionPlan &executionPlan, std::string &data
 }
 
 void TxtParser::getAlgorithmVariant(ExecutionPlan &executionPlan, std::string &dataStr, std::string &kValue) {
-    static const std::string validAlgorithms = "basic, splitting k, spilling k";
+    static const std::string validAlgorithms = "basic, splitting k, spilling k, freeAlgo k";
 
     if (dataStr == "basic") {
         if (!kValue.empty())
@@ -90,14 +90,19 @@ void TxtParser::getAlgorithmVariant(ExecutionPlan &executionPlan, std::string &d
     if (kValue.empty())
         throw std::domain_error("Algorithm '" + dataStr + "' requires a numeric parameter k. Valid: " + validAlgorithms);
 
-    if (dataStr != "splitting" && dataStr != "spilling")
+    if (dataStr != "splitting" && dataStr != "spilling" && dataStr != "freeAlgo")
         throw std::domain_error("Unknown algorithm '" + dataStr + "'. Valid: " + validAlgorithms);
 
     int k = getInteger(kValue);
-    rejectIfLessThan(k, "K", 1);
-    std::cout << "Register count: " << executionPlan.registerCount << std::endl;
+    rejectIfLessThan(k, "K", 0);
     executionPlan.k = k;
-    executionPlan.algorithmVariant = dataStr == "splitting" ? splitting : spilling;
+    if (dataStr == "splitting") {
+        executionPlan.algorithmVariant = splitting;
+    } else if (dataStr == "spilling") {
+        executionPlan.algorithmVariant = spilling;
+    } else {
+        executionPlan.algorithmVariant = freeAlgo;
+    }
 }
 
 Line TxtParser::parseLine(const std::string& lineAsStr ) {
@@ -118,8 +123,10 @@ Line TxtParser::parseLine(const std::string& lineAsStr ) {
 }
 
 void TxtParser::removeTrailingSequence(std::string &str, const std::string &s) {
-    const size_t start = str.find_first_not_of(s);
-    const size_t end = str.find_last_not_of(s);
+    // Add carriage return, newline, and tabs to whatever characters we are stripping
+    std::string charsToRemove = s + "\r\n\t";
+    const size_t start = str.find_first_not_of(charsToRemove);
+    const size_t end = str.find_last_not_of(charsToRemove);
     if (start == std::string::npos || end == std::string::npos) {
         str = "";
     } else {
@@ -136,13 +143,5 @@ int TxtParser::getInteger(std::string &str) {
 void TxtParser::rejectIfLessThan(int val, const std::string& name, int threshold) {
     if (val < threshold)
         throw std::domain_error(name + " must be >= " + std::to_string(threshold) +
-                                ". Got: " + std::to_string(val));
-}
-
-
-// TODO: this function is not needed(?)
-void TxtParser::rejectIfGreaterThan(int val, const std::string& name, int threshold) {
-    if (val > threshold)
-        throw std::domain_error(name + " must be <= " + std::to_string(threshold) +
                                 ". Got: " + std::to_string(val));
 }

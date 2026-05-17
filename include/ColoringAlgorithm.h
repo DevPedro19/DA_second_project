@@ -7,8 +7,7 @@
 
 #include "../data_structures/Graph.h"
 
-class Graph;
-
+/** @brief Abstract base class for graph coloring algorithms. Allows polymorphic behavior for algorithms internally used */
 class ColoringAlgorithm {
 public:
     virtual ~ColoringAlgorithm() = default;
