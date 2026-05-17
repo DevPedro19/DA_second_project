@@ -1,0 +1,30 @@
+<map id="include/ColoringAlgorithm.h" name="include/ColoringAlgorithm.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="436,5,639,31"/>
+<area shape="rect" id="Node000002" href="$BasicAlgorithm_8h.html" title=" " alt="" coords="271,79,455,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="498,38,392,81,390,76,496,33"/>
+<area shape="rect" id="Node000011" href="$HybridAlgorithm_8h.html" title=" " alt="" coords="616,79,808,104"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="579,33,684,76,682,81,577,38"/>
+<area shape="rect" id="Node000003" href="$AlgorithmAggregator_8h.html" title=" " alt="" coords="345,225,565,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="320,112,294,125,273,141,263,158,263,166,268,176,283,193,302,206,345,224,343,229,299,211,280,197,263,179,258,168,258,157,269,137,291,120,317,107"/>
+<area shape="rect" id="Node000006" href="$SpillingAlgorithm_8h.html" title=" " alt="" coords="5,152,203,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="309,110,147,154,145,149,307,105"/>
+<area shape="rect" id="Node000008" href="$SplittingAlgorithm_8h.html" title=" " alt="" coords="472,152,675,177"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="410,106,540,149,538,154,408,111"/>
+<area shape="rect" id="Node000010" href="$BasicAlgorithm_8cpp.html" title=" " alt="" coords="277,152,448,177"/>
+<area shape="poly" id="edge11_Node000002_Node000010" title=" " alt="" coords="365,118,365,152,360,152,360,118"/>
+<area shape="rect" id="Node000004" href="$AlgorithmAggregator_8cpp.html" title=" " alt="" coords="265,299,471,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="432,261,384,301,380,296,429,257"/>
+<area shape="rect" id="Node000005" href="$CLI_8cpp.html" title=" " alt="" coords="495,299,587,324"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="481,257,529,296,525,301,477,261"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="174,177,398,223,397,228,173,183"/>
+<area shape="rect" id="Node000007" href="$SpillingAlgorithm_8cpp.html" title=" " alt="" coords="12,225,196,251"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="107,191,107,225,101,225,101,191"/>
+<area shape="poly" id="edge9_Node000008_Node000003" title=" " alt="" coords="544,187,475,227,473,223,541,182"/>
+<area shape="rect" id="Node000009" href="$SplittingAlgorithm_8cpp.html" title=" " alt="" coords="595,225,786,251"/>
+<area shape="poly" id="edge10_Node000008_Node000009" title=" " alt="" coords="605,182,673,223,670,227,603,187"/>
+<area shape="poly" id="edge13_Node000011_Node000003" title=" " alt="" coords="714,118,707,150,699,166,688,179,662,195,624,208,532,228,531,223,622,203,660,190,685,175,695,163,701,148,708,117"/>
+<area shape="poly" id="edge14_Node000011_Node000008" title=" " alt="" coords="679,113,597,154,595,149,676,108"/>
+<area shape="poly" id="edge16_Node000011_Node000009" title=" " alt="" coords="822,97,878,106,925,121,941,132,951,145,952,161,942,179,918,196,880,210,787,229,786,224,879,205,915,192,938,176,946,160,946,147,938,135,923,126,877,111,821,102"/>
+<area shape="rect" id="Node000012" href="$HybridAlgorithm_8cpp.html" title=" " alt="" coords="749,152,928,177"/>
+<area shape="poly" id="edge15_Node000011_Node000012" title=" " alt="" coords="746,108,819,149,817,154,743,113"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="HybridAlgorithm" name="HybridAlgorithm">
+<area shape="rect" id="Node000001" title="Hybrid coloring algorithm, which combines multiple approaches to achieve better complexity." alt="" coords="11,79,140,104"/>
+<area shape="rect" id="Node000002" href="$classColoringAlgorithm.html" title="Abstract base class for graph coloring algorithms. Allows polymorphic behavior for algorithms interna..." alt="" coords="5,5,145,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,44,78,79,73,79,73,44"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="WebBuilder" name="WebBuilder">
+<area shape="rect" id="Node000001" title="The WebBuilder class is responsible for building the webs for a given variable and its associated liv..." alt="" coords="108,284,204,309"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="31,196,118,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,230,147,282,143,285,93,233"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,93,144,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,147,77,196,72,196,72,147"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="143,196,332,221"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="219,234,193,262,170,285,166,282,189,258,215,230"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="183,101,292,126"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="240,140,240,196,235,196,235,140"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="218,5,257,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="240,44,240,101,235,101,235,44"/>
+</map>

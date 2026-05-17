@@ -1,0 +1,17 @@
+<map id="InfoMenu" name="InfoMenu">
+<area shape="rect" id="Node000001" title="Provider a user interface that allows the user&#39;s to select different options to view the data and run..." alt="" coords="205,387,288,412"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="51,284,259,324"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,336,179,361,195,374,214,384,211,389,192,379,175,364,160,338"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="31,196,118,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,230,140,282,136,286,91,234"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,93,144,133"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="77,147,77,196,72,196,72,147"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="143,196,332,221"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="220,234,173,286,169,282,216,230"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="183,101,292,126"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="240,140,240,196,235,196,235,140"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="218,5,257,31"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="240,44,240,101,235,101,235,44"/>
+<area shape="rect" id="Node000008" href="$structExecutionPlan.html" title="This struct represents the execution plan for the register allocation algorithm, containing the numbe..." alt="" coords="283,291,397,317"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="334,331,325,348,313,365,296,378,277,389,275,384,293,374,309,361,320,345,329,328"/>
+</map>

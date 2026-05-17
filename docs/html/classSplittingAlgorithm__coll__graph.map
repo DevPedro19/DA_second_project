@@ -1,0 +1,5 @@
+<map id="SplittingAlgorithm" name="SplittingAlgorithm">
+<area shape="rect" id="Node000001" title="Class that represents the Splitting algorithm." alt="" coords="5,93,145,119"/>
+<area shape="rect" id="Node000002" href="$classColoringAlgorithm.html" title="Abstract base class for graph coloring algorithms. Allows polymorphic behavior for algorithms interna..." alt="" coords="5,5,145,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,45,78,93,73,93,73,45"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="AlgorithmAggregator" name="AlgorithmAggregator">
+<area shape="rect" id="Node000001" title="Class that aggregates all algorithms, acting as a unified wrapper for register allocation strategies ..." alt="" coords="216,196,375,221"/>
+<area shape="rect" id="Node000002" href="$classBasicAlgorithm.html" title="Basic coloring algorithm, a greedy algorithm, which is not optimal." alt="" coords="5,93,127,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,130,90,152,108,170,126,178,152,185,216,196,215,202,151,191,124,183,104,174,86,155,73,133"/>
+<area shape="rect" id="Node000003" href="$classColoringAlgorithm.html" title="Abstract base class for graph coloring algorithms. Allows polymorphic behavior for algorithms interna..." alt="" coords="223,5,363,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="251,38,97,96,96,91,249,33"/>
+<area shape="rect" id="Node000004" href="$classHybridAlgorithm.html" title="Hybrid coloring algorithm, which combines multiple approaches to achieve better complexity." alt="" coords="151,93,280,119"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="275,43,228,95,224,91,271,39"/>
+<area shape="rect" id="Node000005" href="$classSpillingAlgorithm.html" title="Class that represents the Spilling algorithm." alt="" coords="304,93,439,119"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="314,39,362,91,358,95,310,43"/>
+<area shape="rect" id="Node000006" href="$classSplittingAlgorithm.html" title="Class that represents the Splitting algorithm." alt="" coords="463,93,603,119"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="377,25,424,36,470,52,500,71,523,91,520,95,497,75,468,57,422,41,376,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="216,132,218,152,226,170,239,184,257,194,254,198,236,188,221,174,213,154,210,133"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="364,133,340,174,314,198,310,194,336,170,359,130"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="521,132,502,155,478,174,427,195,375,206,374,201,426,190,475,170,498,151,516,129"/>
+</map>

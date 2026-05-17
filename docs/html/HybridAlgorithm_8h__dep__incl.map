@@ -1,0 +1,17 @@
+<map id="include/HybridAlgorithm.h" name="include/HybridAlgorithm.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="295,5,487,31"/>
+<area shape="rect" id="Node000002" href="$AlgorithmAggregator_8h.html" title=" " alt="" coords="85,152,305,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="283,36,243,54,211,80,201,97,196,117,196,152,191,152,191,116,196,95,207,77,241,49,281,32"/>
+<area shape="rect" id="Node000005" href="$SplittingAlgorithm_8h.html" title=" " alt="" coords="221,79,423,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="372,43,335,80,331,77,369,39"/>
+<area shape="rect" id="Node000006" href="$SplittingAlgorithm_8cpp.html" title=" " alt="" coords="353,152,544,177"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="414,40,438,78,448,118,451,152,446,152,443,119,433,80,409,43"/>
+<area shape="rect" id="Node000007" href="$HybridAlgorithm_8cpp.html" title=" " alt="" coords="498,79,677,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="436,33,556,76,554,81,435,38"/>
+<area shape="rect" id="Node000003" href="$AlgorithmAggregator_8cpp.html" title=" " alt="" coords="5,225,212,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="173,188,125,227,121,223,169,184"/>
+<area shape="rect" id="Node000004" href="$CLI_8cpp.html" title=" " alt="" coords="236,225,328,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="221,184,270,223,266,227,218,188"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="291,113,217,154,215,149,288,108"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="356,108,429,149,427,154,353,113"/>
+</map>
