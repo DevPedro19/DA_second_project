@@ -79,7 +79,7 @@ private:
      * @return Returns true if the graph was successfully colored with the number of colors used, false otherwise
      * (if the number of colors used exceeds the maximum number of colors allowed).
      * @par Complexity
-     * Time: O(V logV + VE logV), where V is the number of vertices and E is the number of edges in the graph.
+     * Time: O(VE logV), where V is the number of vertices and E is the number of edges in the graph.
     */
     static bool DSatur(const Graph &interferenceGraph, int& numColors);
 
