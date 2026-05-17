@@ -135,7 +135,11 @@ void CLI::execute(const std::vector<std::string> &args) {
         int regsUsed;
 
         if (executionPlan.algorithmVariant == freeAlgo) {
-            regsUsed = algorithmAggregator.runFreeAlgorithm(interferenceGraph, executionPlan.registerCount, executionPlan.k);
+            regsUsed = algorithmAggregator.runHybridAlgorithm(interferenceGraph, executionPlan.registerCount);
+            if (regsUsed == 0) {
+                // could not color using the hybrid algorithm
+                regsUsed = algorithmAggregator.runFreeAlgorithm(interferenceGraph, executionPlan.registerCount, executionPlan.k);
+            }
         } else {
             regsUsed = algorithmAggregator.runBasicAlgorithm(interferenceGraph, executionPlan.registerCount);
             if (regsUsed == 0) { // could not color using the basic algorithm

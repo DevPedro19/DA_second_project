@@ -85,6 +85,7 @@ int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int max
         for (Vertex* vertex : interferenceGraph.getVertexSet()) {
             if (vertex->isActive()) pq.insert(vertex);
         }
+        if (pq.empty()) break; // no more webs to split, exit the loop
         Web webToSplit = pq.extractMin()->getInfo(); // split a web
         websToSplit.push_back(webToSplit);
         auto [xi, xf] = runIntersectionAlgorithm(interferenceGraph, webToSplit, numColors);
