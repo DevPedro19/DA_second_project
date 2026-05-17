@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.26)
-project(DA_second_project)
+project(RegisterAllocation)
 
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(include)
 
-add_executable(DA_second_project
+add_executable(RegisterAllocation
         include/allocation.h
         include/WebBuilder.h
         include/CLI.h
@@ -38,3 +38,5 @@ add_executable(DA_second_project
         src/HybridAlgorithm.cpp
         include/ColoringAlgorithm.h
 )
+# Output main.exe to the project root
+set_target_properties(RegisterAllocation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})

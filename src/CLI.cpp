@@ -15,13 +15,13 @@
 CLI::CLI() = default;
 
 void CLI::setRangesFileName(const std::string &rangesFileName) {
-    std::filesystem::path p = "../input/ranges";
+    std::filesystem::path p = "input/ranges";
     p /= rangesFileName;
     _rangesFileName = p.string();
 }
 
 void CLI::setRegistersFileName(const std::string &registersFileName) {
-    std::filesystem::path p = "../input/registers";
+    std::filesystem::path p = "input/registers";
     p /= registersFileName;
     _registersFileName = p.string();
 }
@@ -52,6 +52,7 @@ void CLI::processArgs(const std::vector<std::string> &args) {
         }
         // Otherwise the output is put in the same as the rest
     } else {
+        printTitle();
         const std::string rangesFile = askRangeFilePath();
         const std::string registersFile = askRegisterFilePath();
         checkValidInputFiles(rangesFile, registersFile);
@@ -75,7 +76,6 @@ void CLI::checkValidInputFiles(const std::string& rangesFile, const std::string&
 }
 
 void CLI::readInput(const std::string& rangesFile, const std::string& registersFile, std::map<std::string, std::vector<LiveRange>>& variableLiveRanges, ExecutionPlan& executionPlan){
-
     TxtParser parser(rangesFile, registersFile);
     parser.parseFiles(variableLiveRanges, executionPlan);
 }
@@ -119,7 +119,6 @@ std::vector<Web> CLI::collectWebs(const std::map<std::string, std::vector<LiveRa
 }
 
 void CLI::execute(const std::vector<std::string> &args) {
-    printTitle();
     processArgs(args);
 
     std::map<std::string, std::vector<LiveRange>> variableLiveRanges;

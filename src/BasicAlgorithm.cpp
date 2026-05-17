@@ -3,7 +3,8 @@
 #include <stack>
 
 bool BasicAlgorithm::runAlgorithm(Graph &interferenceGraph, int &numColors) {
-    std::stack<Vertex* > s;
+    std::stack<Vertex*> s;
+    std::vector<Vertex*> disabledVertices;
     // Loop runs until all vertices are removed
     while (!interferenceGraph.getActiveVertexSet().empty()) {
         bool removedVertex = false; // boolean flag to check whether at least one vertex was removed in this iteration
@@ -12,12 +13,16 @@ bool BasicAlgorithm::runAlgorithm(Graph &interferenceGraph, int &numColors) {
             if (vertex->getActiveAdj().size() < numColors) {
                 s.push(vertex);
                 vertex->disable();
+                disabledVertices.push_back(vertex);
                 removedVertex = true;
             }
         }
         // If no vertex was removed in this iteration, it means that all remaining vertices have degree >= numColors,
         // so coloring is not possible, returning false
         if (!removedVertex) {
+            for (auto vertex : disabledVertices) {
+                vertex->setActive();
+            }
             return false;
         }
     }
