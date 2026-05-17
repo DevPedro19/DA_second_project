@@ -12,7 +12,8 @@
 enum AlgorithmVariant {
     basic,
     splitting,
-    spilling
+    spilling,
+    freeAlgo
 };
 
 /**

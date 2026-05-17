@@ -141,6 +141,9 @@ void CLI::execute(const std::vector<std::string> &args) {
 
             } else if (executionPlan.algorithmVariant == splitting) {
                 regsUsed = algorithmAggregator.runSplittingAlgorithm(interferenceGraph, executionPlan.k, executionPlan.registerCount);
+
+            } else if (executionPlan.algorithmVariant == freeAlgo) {
+                regsUsed = algorithmAggregator.runFreeAlgorithm(interferenceGraph, executionPlan.registerCount, executionPlan.k);
             }
         }
         writeOutput(interferenceGraph, executionPlan, regsUsed, "output.txt");

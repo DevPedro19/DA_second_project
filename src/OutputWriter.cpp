@@ -40,7 +40,7 @@ void OutputWriter::writeRegisters(std::ofstream& ofs, const Graph& interferenceG
     }
 }
 
-void OutputWriter::writeSpilled(std::ofstream& ofs) {
+void OutputWriter::writeSplit(std::ofstream& ofs) {
     std::set<int> memLines;
 
     for (const auto& webSplit : Graph::getSplitWebsMap()) {
@@ -62,9 +62,9 @@ void OutputWriter::writeOutput(const Graph& interferenceGraph, const ExecutionPl
         ofs << "Spilling: " << interferenceGraph.getSpilledWebsNumber() << "\n";
     }
 
-    if (executionPlan.algorithmVariant == splitting) {
+    if (executionPlan.algorithmVariant == splitting || executionPlan.algorithmVariant == freeAlgo) {
         ofs << "Split: " << Graph::getSplitWebsMap().size() << "\n";
-        writeSpilled(ofs);
+        writeSplit(ofs);
     }
 
     ofs << "# Total number of webs followed by the listing of the program points of each one\n";

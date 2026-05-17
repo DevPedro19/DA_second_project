@@ -10,7 +10,7 @@ SpillingAlgorithm::SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm) : co
 bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getDegree() == v2.getDegree()) {
         if (v1.getNeighborDegreeSum() == v2.getNeighborDegreeSum()) {
-            // Promotes spilling of smaller webs, because the have less reads/writes associated
+            // Promotes spilling of smaller webs, because they have less reads/writes associated
             return (v1.getInfo().getLastLineNum() - v1.getInfo().getFirstLineNum()) <
             (v2.getInfo().getLastLineNum() - v2.getInfo().getFirstLineNum());
         }

@@ -90,14 +90,14 @@ void TxtParser::getAlgorithmVariant(ExecutionPlan &executionPlan, std::string &d
     if (kValue.empty())
         throw std::domain_error("Algorithm '" + dataStr + "' requires a numeric parameter k. Valid: " + validAlgorithms);
 
-    if (dataStr != "splitting" && dataStr != "spilling")
+    if (dataStr != "splitting" && dataStr != "spilling" && dataStr != "freeAlgo")
         throw std::domain_error("Unknown algorithm '" + dataStr + "'. Valid: " + validAlgorithms);
 
     int k = getInteger(kValue);
     rejectIfLessThan(k, "K", 1);
     std::cout << "Register count: " << executionPlan.registerCount << std::endl;
     executionPlan.k = k;
-    executionPlan.algorithmVariant = dataStr == "splitting" ? splitting : spilling;
+    executionPlan.algorithmVariant = dataStr == "splitting" ? splitting : dataStr == "spilling" ? spilling : freeAlgo;
 }
 
 Line TxtParser::parseLine(const std::string& lineAsStr ) {
