@@ -28,6 +28,7 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxWebsToSpil
     }
 
     for (int spilledRegs = 1; spilledRegs <= maxWebsToSpill; spilledRegs++) {
+        if (pq.empty()) break; // no more registers to spill, but still cannot color the graph with numColors
         Vertex* spilledReg = pq.extractMin(); // spill a register
         spilledReg->disable(); // disable the register node in the graph
 

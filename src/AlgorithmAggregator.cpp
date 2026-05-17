@@ -20,3 +20,7 @@ int AlgorithmAggregator::runSplittingAlgorithm(Graph &interferenceGraph, int max
 int AlgorithmAggregator::runFreeAlgorithm(Graph &interferenceGraph, int numColors, int maxWebsToSplit) {
     return freeAlgorithm.execute(interferenceGraph, numColors, maxWebsToSplit);
 }
+
+int AlgorithmAggregator::runHybridAlgorithm(Graph &interferenceGraph, int &numColors) {
+    return hybridAlgorithm.execute(interferenceGraph, numColors);
+}

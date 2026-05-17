@@ -1,2 +1,2 @@
-registers: 3
-algorithm: splitting, 2
+registers: 0
+algorithm: freeAlgo, 10

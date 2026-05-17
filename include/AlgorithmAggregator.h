@@ -28,6 +28,14 @@ public:
     int runBasicAlgorithm(Graph& interferenceGraph, int& numColors);
 
     /**
+     * @brief Runs the hybrid graph coloring algorithm on the given interference graph. This algorithm combines multiple approaches to achieve better complexity.
+     * @param interferenceGraph The interference graph to be colored.
+     * @param numColors The number of available registers (colors). This parameter here is passed by reference because the hybrid algorithm may modify it if it runs the DSatur algorithm, which finds the minimum colors needed to color the graph.
+     * @return The number of registers (colors) used to color the graph, if the value is 0 it means it couldn't color it.
+     */
+    int runHybridAlgorithm(Graph& interferenceGraph, int& numColors);
+
+    /**
      * @brief Runs the spilling algorithm on the given interference graph. This algorithm attempts to spill up to `maxRegsToSpill` registers in order to reduce the number of colors needed to color the graph.
      * @param interferenceGraph The interference graph to be colored.
      * @param maxRegsToSpill The maximum number of registers (vertices) that can be spilled (disabled).

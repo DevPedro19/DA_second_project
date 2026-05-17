@@ -12,7 +12,8 @@ var searchData=
   ['runalgorithm_9',['runalgorithm',['../classBasicAlgorithm.html#af3b83175652e3c0274949da8070699d7',1,'BasicAlgorithm::runAlgorithm()'],['../classHybridAlgorithm.html#a49c8a41b4c15768356916cabbde2b645',1,'HybridAlgorithm::runAlgorithm()']]],
   ['runbasicalgorithm_10',['runBasicAlgorithm',['../classAlgorithmAggregator.html#ab66324b6e6f24ab19ba0b00db82da76d',1,'AlgorithmAggregator']]],
   ['runfreealgorithm_11',['runFreeAlgorithm',['../classAlgorithmAggregator.html#aa26dba9566f600d8b72b832df2824e4b',1,'AlgorithmAggregator']]],
-  ['runintersectionalgorithm_12',['runIntersectionAlgorithm',['../classSplittingAlgorithm.html#a195bf600ea4ae770b7b4060348fcc8cd',1,'SplittingAlgorithm']]],
-  ['runspillingalgorithm_13',['runSpillingAlgorithm',['../classAlgorithmAggregator.html#a87efd4c9594bfc99926d1136d36510f0',1,'AlgorithmAggregator']]],
-  ['runsplittingalgorithm_14',['runSplittingAlgorithm',['../classAlgorithmAggregator.html#aecc6d3cbdde188e39aaa5c6d47655654',1,'AlgorithmAggregator']]]
+  ['runhybridalgorithm_12',['runHybridAlgorithm',['../classAlgorithmAggregator.html#a6385938d1ceab49863feaae0b30113b0',1,'AlgorithmAggregator']]],
+  ['runintersectionalgorithm_13',['runIntersectionAlgorithm',['../classSplittingAlgorithm.html#a195bf600ea4ae770b7b4060348fcc8cd',1,'SplittingAlgorithm']]],
+  ['runspillingalgorithm_14',['runSpillingAlgorithm',['../classAlgorithmAggregator.html#a87efd4c9594bfc99926d1136d36510f0',1,'AlgorithmAggregator']]],
+  ['runsplittingalgorithm_15',['runSplittingAlgorithm',['../classAlgorithmAggregator.html#aecc6d3cbdde188e39aaa5c6d47655654',1,'AlgorithmAggregator']]]
 ];
