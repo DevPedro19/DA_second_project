@@ -6,11 +6,11 @@ SpillingAlgorithm::SpillingAlgorithm(ColoringAlgorithm* coloring_algorithm) : co
 
 // 1. Higher degree
 // 2. Higher neighbor degree sum
-// This criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
+// These criteria extends the definition of the "hardest node to color". Therefore, selecting the hardest node to color first potentially minimizes the number of colors needed.
 bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     if (v1.getDegree() == v2.getDegree()) {
         if (v1.getNeighborDegreeSum() == v2.getNeighborDegreeSum()) {
-            // Promotes spilling of smaller webs, because the have less reads/writes associated
+            // Promotes spilling of smaller webs, because they have less reads/writes associated
             return (v1.getInfo().getLastLineNum() - v1.getInfo().getFirstLineNum()) <
             (v2.getInfo().getLastLineNum() - v2.getInfo().getFirstLineNum());
         }
@@ -19,7 +19,7 @@ bool SpillingAlgorithm::spillingComp(const Vertex& v1, const Vertex& v2) {
     return v1.getDegree() > v2.getDegree();
 }
 
-int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int numColors) {
+int SpillingAlgorithm::execute(Graph &interferenceGraph, const int maxWebsToSpill, const int numColors) const {
     MutablePriorityQueue<Vertex> pq(spillingComp);
     int regsUsed = 0;
 
@@ -27,12 +27,12 @@ int SpillingAlgorithm::execute(Graph &interferenceGraph, int maxRegsToSpill, int
         if (vertex->isActive()) pq.insert(vertex);
     }
 
-    for (int spilledRegs = 1; spilledRegs <= maxRegsToSpill; spilledRegs++) {
+    for (int spilledRegs = 1; spilledRegs <= maxWebsToSpill; spilledRegs++) {
         Vertex* spilledReg = pq.extractMin(); // spill a register
         spilledReg->disable(); // disable the register node in the graph
 
         // update the priority queue
-        for (Edge* edge : spilledReg->getActiveAdj()) {
+        for (const Edge* edge : spilledReg->getActiveAdj()) {
             Vertex* neighbor = edge->getDest();
             pq.decreaseKey(neighbor);
         }

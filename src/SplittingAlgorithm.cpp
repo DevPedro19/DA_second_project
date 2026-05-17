@@ -1,7 +1,3 @@
-//
-// Created by pedro on 5/11/2026.
-//
-
 #include "SplittingAlgorithm.h"
 #include <algorithm>
 
@@ -31,7 +27,7 @@ bool aux(const std::pair<Line,int> &a, const std::pair<Line,int> &b) {
     return a.first < b.first;
 }
 
-std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& interferenceGraph, const Web& webToSplit, int maxColors) {
+std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& interferenceGraph, const Web& webToSplit, const int maxColors) {
     std::vector activeWebs = {webToSplit}; // The web to split is active
     const Vertex* webToSplitVertex = interferenceGraph.findVertex(webToSplit);
 
@@ -68,7 +64,7 @@ std::pair<Line, Line> SplittingAlgorithm::runIntersectionAlgorithm(const Graph& 
 }
 
 
-std::pair<Web, Web> SplittingAlgorithm::splitWeb(Web& webToSplit, const Line& xi, const Line& xf) {
+std::pair<Web, Web> SplittingAlgorithm::splitWeb(const Web& webToSplit, const Line& xi, const Line& xf) {
     Web splitWeb1 = webToSplit;
     splitWeb1.setLastLine(xi); // The first part of the split web will end at the line before the intersection point
 
@@ -78,7 +74,7 @@ std::pair<Web, Web> SplittingAlgorithm::splitWeb(Web& webToSplit, const Line& xi
     return {splitWeb1, splitWeb2};
 }
 
-int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int maxWebsToSplit) {
+int SplittingAlgorithm::execute(Graph &interferenceGraph, int numColors, int maxWebsToSplit) const {
     int colorsUsed = 0;
     std::vector<Web> websToSplit;
     int splitWebs;
